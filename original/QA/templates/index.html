@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Generator with Question Banks</title>
+</head>
+<style>
+    /* Root variables for consistent theming */
+    :root {
+        --primary-color: #38bdf8; /* Bright cyan for accents */
+        --secondary-color: #818cf8; /* Soft purple for secondary accents */
+        --bg-dark: #0f0f17; /* Deep dark background */
+        --card-bg: #1c1c2c; /* Slightly lighter card background */
+        --text-light: #f1f1f1; /* Light text for readability */
+        --text-muted: #c0c0c0; /* Muted text for secondary info */
+        --border-color: rgba(56, 189, 248, 0.2); /* Subtle cyan border */
+        --shadow-color: rgba(0, 0, 0, 0.5); /* Shadow for depth */
+        --disabled-color: #4b4b5e; /* Gray for disabled state */
+    }
+
+    /* Global reset and base styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, var(--bg-dark), #1e1e2f);
+        color: var(--text-light);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+    }
+
+    /* Container styling */
+    .container {
+        max-width: 800px;
+        width: 100%;
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px var(--shadow-color);
+        border: 1px solid var(--border-color);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(56, 189, 248, 0.2);
+    }
+
+    /* Headings */
+    h1 {
+        font-size: 2.5rem;
+        text-align: center;
+        color: var(--primary-color);
+        margin-bottom: 2rem;
+        text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+        position: relative;
+    }
+
+    h1::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    }
+
+    h2 {
+        font-size: 1.8rem;
+        color: var(--secondary-color);
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    h3 {
+        font-size: 1.4rem;
+        color: var(--primary-color);
+        margin: 1.5rem 0 1rem;
+    }
+
+    /* Section styling */
+    section {
+        margin-bottom: 2rem;
+    }
+
+    /* Form styling */
+    form#uploadForm {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    form div {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    /* Labels */
+    label {
+        font-size: 1rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    /* Inputs */
+    input[type="file"],
+    input[type="number"],
+    input[type="text"] {
+        padding: 0.8rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-light);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    input[type="file"]:hover,
+    input[type="number"]:hover,
+    input[type="text"]:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+    }
+
+    input[type="file"]:focus,
+    input[type="number"]:focus,
+    input[type="text"]:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* File input styling */
+    input[type="file"] {
+        cursor: pointer;
+    }
+
+    span#fileNames,
+    span#studentFileNames {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-top: 0.3rem;
+    }
+
+    /* Checkbox styling */
+    input[type="checkbox"] {
+        appearance: none;
+        width: 1.2rem;
+        height: 1.2rem;
+        border: 2px solid var(--border-color);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.05);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    input[type="checkbox"]:checked {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        position: relative;
+    }
+
+    input[type="checkbox"]:checked::after {
+        content: '\2713';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--text-light);
+        font-size: 0.8rem;
+    }
+
+    label[for="zipDownload"] {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    /* Button styling */
+    button[type="submit"] {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        color: var(--text-light);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+        align-self: center;
+    }
+
+    button[type="submit"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
+        background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+    }
+
+    button[type="submit"]:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(56, 189, 248, 0.2);
+    }
+
+    /* Next button container */
+    .next-button-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 2rem;
+    }
+
+    /* Next anchor tag styling */
+    a#nextBtn {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        background: var(--disabled-color);
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        cursor: not-allowed;
+    }
+
+    a#nextBtn.enabled {
+        background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+        color: var(--text-light);
+        cursor: pointer;
+    }
+
+    a#nextBtn.enabled:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    a#nextBtn.enabled:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(56, 189, 248, 0.2);
+    }
+
+    a#nextBtn:focus-visible {
+        outline: 2px solid var(--primary-color);
+        outline-offset: 2px;
+    }
+
+    /* Result section */
+    #result {
+        margin-top: 2rem;
+        padding: 1rem;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-muted);
+        text-align: center;
+        min-height: 50px;
+    }
+
+    /* Note section */
+    section p {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+    }
+
+    section p strong {
+        color: var(--primary-color);
+    }
+
+    /* Responsive design */
+    @media (max-width: 600px) {
+        .container {
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+        }
+
+        a#nextBtn {
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+    /* Focus states for accessibility */
+    input:focus-visible,
+    button:focus-visible,
+    a:focus-visible {
+        outline: 2px solid var(--primary-color);
+        outline-offset: 2px;
+    }
+</style>
+<body>
+    <div class="container">
+        <h1>Teacher Question Generator</h1>
+        
+        <section>
+            <h2>Upload Up to 10 Question Banks</h2>
+            <form id="uploadForm" method="POST" action="/upload-and-generate/" enctype="multipart/form-data">
+                <div>
+                    <label for="questionFiles">Upload Question Banks (TXT, PDF, DOCX):</label>
+                    <input type="file" id="questionFiles" name="files" accept=".txt,.pdf,.docx" multiple required>
+                    <span id="fileNames">No file selected</span>
+                </div>
+                <div>
+                    <label for="studentCount">Number of Question Sets:</label>
+                    <input type="number" id="studentCount" name="student_count" min="1" value="1" required>
+                </div>
+                <div>
+                    <label for="questionsPerBank">Questions per Bank per Set:</label>
+                    <input type="number" id="questionsPerBank" name="questions_per_bank" min="1" value="2" required>
+                </div>
+                <div>
+                    <label for="studentNamesFile">Student Names File (CSV, XLSX, TXT):</label>
+                    <input type="file" id="studentNamesFile" name="student_names_file" accept=".txt,.csv,.xlsx">
+                    <span id="studentFileNames">No file selected</span>
+                </div>
+                <div>
+                    <label for="custom_title">Custom Paper Title:</label>
+                    <input type="text" id="custom_title" name="custom_title" value="Class 10 Examination Paper" required>
+                </div>
+                <div>
+                    <h3>Paper Details</h3>
+                    <label for="course_name">Course Name:</label>
+                    <input type="text" id="course_name" name="course_name" value="Mathematics" required>
+                    <label for="section">Section:</label>
+                    <input type="text" id="section" name="section" value="A" required>
+                    <label for="total_marks">Total Marks:</label>
+                    <input type="number" id="total_marks" name="total_marks" min="1" value="100" required>
+                </div>
+                <div>
+                    <label for="zipDownload">Download as ZIP:</label>
+                    <input type="checkbox" id="zipDownload" name="zip_download">
+                </div>
+                
+                <button type="submit">Shuffle & Generate PDFs</button>
+            </form>
+            <div id="result"></div>
+        </section>
+
+        <section id="downloadSection" style="display: none;">
+            <h2>Download Student PDFs</h2>
+            <p id="downloadMessage">PDFs generated! Use the buttons below:</p>
+            <div id="downloadLinks"></div>
+            <button id="downloadPdfsBtn" style="margin-top: 10px;">Download Individual PDFs</button>
+            <button id="downloadZipBtn" style="margin-top: 10px;">Download All as ZIP</button>
+        </section>
+
+        <!-- Next anchor tag -->
+        <div class="next-button-container">
+            <a href="" id="nextBtn">Next</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('uploadForm');
+            const resultDiv = document.getElementById('result');
+            const downloadSection = document.getElementById('downloadSection');
+            const nextBtn = document.getElementById('nextBtn');
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                
+                // Show loading state
+                resultDiv.innerHTML = '<p class="loading">Generating PDFs... Please wait.</p>';
+                downloadSection.style.display = 'none';
+
+                try {
+                    const response = await fetch('/upload-and-generate/', {
+                        method: 'POST',
+                        body: new FormData(form)
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.detail || 'Server error');
+                    }
+
+                    const data = await response.json();
+                    displayResults(data);
+                    
+                    // Enable Next button after successful form submission
+                    nextBtn.classList.add('enabled');
+                    nextBtn.href = 'http://localhost:3000/setup_examT.html'; // Set the href after success
+                } catch (error) {
+                    resultDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+                    console.error('Submission error:', error);
+                }
+            });
+
+            function displayResults(data) {
+                resultDiv.innerHTML = '';
+                downloadSection.style.display = 'block';
+                
+                // Clear previous download links
+                const downloadLinks = document.getElementById('downloadLinks');
+                downloadLinks.innerHTML = '';
+                
+                // Add individual PDF links
+                for (const [name, url] of Object.entries(data.pdf_links)) {
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.textContent = `Download ${name}.pdf`;
+                    link.className = 'pdf-link';
+                    link.target = '_blank';
+                    downloadLinks.appendChild(link);
+                    downloadLinks.appendChild(document.createElement('br'));
+                }
+
+                // Configure ZIP download button
+                const zipBtn = document.getElementById('downloadZipBtn');
+                if (data.zip_link) {
+                    zipBtn.style.display = 'inline-block';
+                    zipBtn.onclick = () => window.location.href = data.zip_link;
+                } else {
+                    zipBtn.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

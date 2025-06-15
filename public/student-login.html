@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed Login & Signup Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #2A3A5E; /* Light dark blue-gray background */
+        }
+
+        .container {
+            position: relative;
+            width: 850px;
+            height: 550px;
+            background: #3B4A7A; /* Slightly lighter blue-gray for container */
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .form-container {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            transition: all 0.6s ease-in-out;
+        }
+
+        .sign-up-container {
+            left: 0;
+            width: 50%;
+            z-index: 2;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .sign-in-container {
+            left: 0;
+            width: 50%;
+            z-index: 1;
+        }
+
+        .container.right-panel-active .sign-up-container {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+            pointer-events: all;
+        }
+
+        .container.right-panel-active .sign-in-container {
+            transform: translateX(100%);
+        }
+
+        .form-container form {
+            background-color: #3B4A7A; /* Match container background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 50px;
+            height: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: bold;
+            margin: 0;
+            margin-bottom: 20px;
+            color: #E6E9F0; /* Light gray for text contrast */
+        }
+
+        .social-container {
+            margin: 20px 0;
+        }
+
+        .social-container a {
+            border: 1px solid #6B7280;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 5px;
+            height: 40px;
+            width: 40px;
+            text-decoration: none;
+            color: #E6E9F0;
+        }
+
+        span {
+            font-size: 14px;
+            margin: 15px 0;
+            color: #A1A8C2; /* Muted blue-gray for secondary text */
+        }
+
+        input {
+            background-color: #4B5A8C; /* Darker blue for inputs */
+            border: none;
+            padding: 12px 15px;
+            margin: 8px 0;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #E6E9F0;
+        }
+
+        button {
+            background: #1E90FF; /* Vibrant blue for buttons */
+            color: #FFFFFF;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 45px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            background: #1C86EE; /* Slightly darker blue on hover */
+        }
+
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            transition: transform 0.6s ease-in-out;
+            z-index: 100;
+            border-radius: 100px 0 0 100px;
+        }
+
+        .container.right-panel-active .overlay-container {
+            transform: translateX(-100%);
+            border-radius: 0 100px 100px 0;
+        }
+
+        .overlay {
+            position: relative;
+            color: #FFFFFF;
+            background: linear-gradient(45deg, #1E90FF, #3B4A7A); /* Blue gradient for overlay */
+            left: -100%;
+            height: 100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+            border-radius: 100px 0 0 100px;
+        }
+
+        .container.right-panel-active .overlay {
+            transform: translateX(50%);
+            border-radius: 0 100px 100px 0;
+        }
+
+        .overlay-panel {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 40px;
+            text-align: center;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .overlay-left {
+            transform: translateX(-20%);
+        }
+
+        .overlay-right {
+            right: 0;
+            transform: translateX(0);
+        }
+
+        .container.right-panel-active .overlay-left {
+            transform: translateX(0);
+        }
+
+        .container.right-panel-active .overlay-right {
+            transform: translateX(20%);
+        }
+
+        button.ghost {
+            background-color: transparent;
+            border: 2px solid #E6E9F0;
+            color: #E6E9F0;
+        }
+
+        button.ghost:hover {
+            background: #1E90FF;
+            border-color: #1E90FF;
+            color: #FFFFFF;
+        }
+
+        .overlay-panel h1 {
+            color: #E6E9F0;
+        }
+
+        .overlay-panel p {
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 20px 0 30px;
+            color: #E6E9F0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container sign-up-container">
+            <form>
+                <h1>Create Account</h1>
+                <div class="social-container">
+                    <a href="#"><i class="fab fa-google"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>or use your email for registration</span>
+                <input type="text" placeholder="Name" required />
+                <input type="email" placeholder="Email" required />
+                <input type="password" placeholder="Password" required />
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form>
+                <h1>Login to Student</h1>
+                <div class="social-container">
+                    <a href="#"><i class="fab fa-google"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>or use your account</span>
+                <input type="email" placeholder="Email" required />
+                <input type="password" placeholder="Password" required />
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Welcome Back!</h1>
+                    <p>Please login with your personal info to stay connected with us</p>
+                    <button class="ghost" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello, Friend!</h1>
+                    <p>Register with your personal details to use all of site features</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const signUpButton = document.getElementById("signUp");
+            const signInButton = document.getElementById("signIn");
+            const container = document.querySelector(".container");
+
+            // Null checks for safety
+            if (!signUpButton || !signInButton || !container) {
+                console.error("One or more elements (signUpButton, signInButton, container) not found.");
+                return;
+            }
+
+            // Switch to sign-up form
+            signUpButton.addEventListener("click", (e) => {
+                e.preventDefault();
+                container.classList.add("right-panel-active");
+            });
+
+            // Switch to sign-in form
+            signInButton.addEventListener("click", (e) => {
+                e.preventDefault();
+                container.classList.remove("right-panel-active");
+            });
+
+            // Function to validate email format
+            function isValidEmail(email) {
+                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                return emailRegex.test(email);
+            }
+
+            // Handle signup form submission
+            document.querySelector(".sign-up-container form").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                let name = document.querySelector(".sign-up-container input[type='text']").value;
+                let email = document.querySelector(".sign-up-container input[type='email']").value;
+                let password = document.querySelector(".sign-up-container input[type='password']").value;
+
+                if (!name || !email || !password) {
+                    alert("❌ Please fill in all fields!");
+                    return;
+                }
+
+                if (!isValidEmail(email)) {
+                    alert("❌ Invalid Email! Please enter a valid email address.");
+                    return;
+                }
+
+                // Save user data in local storage
+                let users = JSON.parse(localStorage.getItem("users")) || [];
+                let userExists = users.some(user => user.email === email);
+
+                if (userExists) {
+                    alert("⚠ Email already exists! Please use a different email.");
+                    return;
+                }
+
+                users.push({ name, email, password });
+                localStorage.setItem("users", JSON.stringify(users));
+                alert("✅ Account successfully created! You can now sign in.");
+
+                // Reset form and switch to sign-in
+                this.reset();
+                container.classList.remove("right-panel-active");
+            });
+
+            // Handle login form submission
+            document.querySelector(".sign-in-container form").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                let email = document.querySelector(".sign-in-container input[type='email']").value;
+                let password = document.querySelector(".sign-in-container input[type='password']").value;
+
+                if (!email || !password) {
+                    alert("❌ Please fill in all fields!");
+                    return;
+                }
+
+                let users = JSON.parse(localStorage.getItem("users")) || [];
+                let validUser = users.find(user => user.email === email && user.password === password);
+
+                if (validUser) {
+                    alert("✅ Login successful!");
+                    this.reset();
+                    // Uncomment the line below if you have a home.html page
+                    window.location.href = "student-dashboard.html";
+                } else {
+                    alert("❌ Invalid email or password! Please try again.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

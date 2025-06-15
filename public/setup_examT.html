@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Exam Portal - Teacher Setup</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #171C33;
+      color: #e0e0e0;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background-color: #0a1640;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .navbar h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .question-paper {
+      background-color: #212845;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      margin-bottom: 30px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .question-title {
+      font-size: 24px;
+      color: #fff;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #3a4366;
+      padding-bottom: 10px;
+    }
+
+    .question-item {
+      background-color: #262f52;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .question-item:hover {
+      background-color: #3a4775;
+    }
+
+    .task-button {
+      background-color: #2c6536;
+      color: white;
+      border: none;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      text-align: left;
+      font-size: 16px;
+    }
+
+    .task-button:hover {
+      background-color: #347a40;
+    }
+
+    .section-button {
+      background-color: #4a5de2;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: none;
+      margin-top: 20px;
+    }
+
+    .section-button.active {
+      display: inline-block;
+    }
+
+    .section-button:hover {
+      background-color: #3949c3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(74, 93, 226, 0.4);
+    }
+
+    .slider {
+      position: fixed;
+      bottom: -300px;
+      left: 0;
+      width: 100%;
+      background-color: #212845;
+      padding: 20px;
+      transition: bottom 0.4s ease-in-out;
+      z-index: 1000;
+      box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
+      border-radius: 15px 15px 0 0;
+    }
+
+    .slider.active {
+      bottom: 0;
+    }
+
+    .slider-title {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 20px;
+      color: #fff;
+    }
+
+    .slider-content {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+
+    .section-option {
+      background-color: #2c3658;
+      color: #fff;
+      padding: 15px 25px;
+      border-radius: 8px;
+      margin: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 120px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .section-option:hover {
+      background-color: #3a4775;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+    }
+
+    .slider-close {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #e0e0e0;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .assignment-option {
+      background-color: #2c6536;
+    }
+
+    .assignment-option:hover {
+      background-color: #347a40;
+    }
+
+    .exam-option {
+      background-color: #8b2a2a;
+    }
+
+    .exam-option:hover {
+      background-color: #a33232;
+    }
+
+    .cla-option {
+      background-color: #7a5427;
+    }
+
+    .cla-option:hover {
+      background-color: #8f6331;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 900;
+      display: none;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #212845;
+      padding: 25px;
+      border-radius: 10px;
+      z-index: 1100;
+      display: none;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+    }
+
+    .modal.active {
+      display: block;
+    }
+
+    .modal-title {
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: #fff;
+      text-align: center;
+    }
+
+    .modal-content {
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #e0e0e0;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #3a4366;
+      background-color: #262f52;
+      color: #e0e0e0;
+    }
+
+    .form-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 25px;
+    }
+
+    .form-button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .form-button.cancel {
+      background-color: #4a4a4a;
+      color: #e0e0e0;
+    }
+
+    .form-button.start {
+      background-color: #4a5de2;
+      color: white;
+    }
+
+    .form-button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #2c6536;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 5px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 1200;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+    }
+
+    .notification.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .pdf-container {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .pdf-container h3 {
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .pdf-container embed {
+      width: 100%;
+      max-width: 600px;
+      height: 400px;
+      border: 2px solid #3a4366;
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .pdf-links {
+      margin-top: 10px;
+    }
+
+    .pdf-links a {
+      color: #4a5de2;
+      text-decoration: none;
+      font-size: 16px;
+      transition: color 0.3s ease;
+      margin-right: 10px;
+    }
+
+    .pdf-links a:hover {
+      color: #3949c3;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .slider-content {
+        flex-direction: column;
+      }
+
+      .section-option {
+        margin: 5px 0;
+        width: 100%;
+      }
+
+      .pdf-container embed {
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="navbar">
+      <h1>Secure Exam Portal - Teacher Setup</h1>
+    </div>
+
+    <div class="main-content">
+      <div class="question-paper">
+        <h2 class="question-title">Demo Questions</h2>
+        <div class="question-item" data-question="1">
+          <div class="pdf-container">
+            <h3>Exam Reference</h3>
+            <embed src="101.pdf" type="application/pdf" />
+            <embed src="102.pdf" type="application/pdf" />
+            <embed src="103.pdf" type="application/pdf" />
+            <embed src="104.pdf" type="application/pdf" />
+            <embed src="105.pdf" type="application/pdf" />
+            <div class="pdf-links">
+              <a href="101.pdf" onclick="showPdf(this.href); return false;">📄 101.pdf</a>
+              <a href="102.pdf" onclick="showPdf(this.href); return false;">📄 102.pdf</a>
+              <a href="103.pdf" onclick="showPdf(this.href); return false;">📄 103.pdf</a>
+              <a href="104.pdf" onclick="showPdf(this.href); return false;">📄 104.pdf</a>
+              <a href="105.pdf" onclick="showPdf(this.href); return false;">📄 105.pdf</a>
+            </div>
+          </div>
+        </div>
+
+        <button class="task-button" id="addTaskBtn">Add Task</button>
+      </div>
+
+      <button class="section-button" id="openSectionSlider">Set Up Exam</button>
+    </div>
+  </div>
+
+  <!-- Section Slider -->
+  <div class="slider" id="sectionSlider">
+    <button class="slider-close" id="closeSectionSlider">×</button>
+    <h3 class="slider-title">Select a Section</h3>
+    <div class="slider-content">
+      <div class="section-option" data-section="Q">Sec Q</div>
+      <div class="section-option" data-section="R">Sec R</div>
+      <div class="section-option" data-section="B">Sec B</div>
+      <div class="section-option" data-section="V">Sec V</div>
+      <div class="section-option" data-section="Z">Sec Z</div>
+    </div>
+  </div>
+
+  <!-- Type Slider -->
+  <div class="slider" id="typeSlider">
+    <button class="slider-close" id="closeTypeSlider">×</button>
+    <h3 class="slider-title">Select Type for <span id="selectedSection"></span></h3>
+    <div class="slider-content">
+      <div class="section-option assignment-option" id="assignmentOption">Assignment</div>
+      <div class="section-option exam-option" id="examOption">Exam</div>
+      <div class="section-option cla-option" id="claOption">CLA</div>
+    </div>
+  </div>
+
+  <!-- Exam Settings Modal -->
+  <div class="modal" id="examSettingsModal">
+    <h3 class="modal-title">Exam Settings</h3>
+    <div class="modal-content">
+      <div class="form-group">
+        <label for="examDuration">Select Duration:</label>
+        <select id="examDuration">
+          <option value="30">30 Minutes</option>
+          <option value="60">1 Hour</option>
+          <option value="120" selected>2 Hours</option>
+          <option value="180">3 Hours</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="tabSwitchLimit">Tab Switch Limit:</label>
+        <select id="tabSwitchLimit">
+          <option value="3" selected>3 Times</option>
+          <option value="5">5 Times</option>
+          <option value="10">10 Times</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="examSection">Section:</label>
+        <input type="text" id="examSection" readonly>
+      </div>
+      <div class="form-group">
+        <label for="examType">Type:</label>
+        <input type="text" id="examType" readonly>
+      </div>
+      <p>Note: During the exam, your screen will be locked and monitored. Changing tabs more than the specified limit will result in automatic submission.</p>
+    </div>
+    <div class="form-buttons">
+      <button class="form-button cancel" id="cancelExam">Cancel</button>
+      <button class="form-button start" id="saveExamSettings">Save Settings</button>
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Notification -->
+  <div class="notification" id="notification"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // DOM Elements
+      const elements = {
+        questionItems: document.querySelectorAll('.question-item'),
+        addTaskBtn: document.getElementById('addTaskBtn'),
+        openSectionSliderBtn: document.getElementById('openSectionSlider'),
+        closeSectionSliderBtn: document.getElementById('closeSectionSlider'),
+        closeTypeSliderBtn: document.getElementById('closeTypeSlider'),
+        sectionSlider: document.getElementById('sectionSlider'),
+        typeSlider: document.getElementById('typeSlider'),
+        selectedSectionSpan: document.getElementById('selectedSection'),
+        sectionOptions: document.querySelectorAll('.section-option[data-section]'),
+        assignmentOption: document.getElementById('assignmentOption'),
+        examOption: document.getElementById('examOption'),
+        claOption: document.getElementById('claOption'),
+        overlay: document.getElementById('overlay'),
+        examSettingsModal: document.getElementById('examSettingsModal'),
+        examSectionInput: document.getElementById('examSection'),
+        examTypeInput: document.getElementById('examType'),
+        saveExamSettingsBtn: document.getElementById('saveExamSettings'),
+        cancelExamBtn: document.getElementById('cancelExam'),
+        notification: document.getElementById('notification'),
+      };
+
+      // Validate elements
+      for (const [key, value] of Object.entries(elements)) {
+        if (!value && key !== 'questionItems' && key !== 'sectionOptions') {
+          console.error(`Element ${key} not found`);
+          return;
+        }
+      }
+
+      // State variables
+      let currentSection = '';
+      let currentType = '';
+
+      // Show Set Up Exam button when clicking a question
+      elements.questionItems.forEach(item => {
+        item.addEventListener('click', () => {
+          elements.openSectionSliderBtn.classList.add('active');
+        });
+      });
+
+      // Open section slider on Add Task
+      elements.addTaskBtn.addEventListener('click', () => {
+        elements.sectionSlider.classList.add('active');
+        elements.overlay.classList.add('active');
+        showNotification('Starting task assignment...');
+      });
+
+      // Open section slider
+      elements.openSectionSliderBtn.addEventListener('click', () => {
+        elements.sectionSlider.classList.add('active');
+        elements.overlay.classList.add('active');
+      });
+
+      // Close section slider
+      elements.closeSectionSliderBtn.addEventListener('click', () => {
+        elements.sectionSlider.classList.remove('active');
+        elements.overlay.classList.remove('active');
+      });
+
+      // Close type slider
+      elements.closeTypeSliderBtn.addEventListener('click', () => {
+        elements.typeSlider.classList.remove('active');
+        elements.overlay.classList.remove('active');
+      });
+
+      // Section selection
+      elements.sectionOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          currentSection = option.getAttribute('data-section');
+          elements.selectedSectionSpan.textContent = `Section ${currentSection}`;
+          elements.sectionSlider.classList.remove('active');
+          elements.typeSlider.classList.add('active');
+        });
+      });
+
+      // Assignment option
+      elements.assignmentOption.addEventListener('click', () => {
+        currentType = 'Assignment';
+        elements.typeSlider.classList.remove('active');
+        showNotification(`Task assigned to Section ${currentSection} as ${currentType}`);
+        elements.overlay.classList.remove('active');
+      });
+
+      // Exam option
+      elements.examOption.addEventListener('click', () => {
+        currentType = 'Exam';
+        elements.typeSlider.classList.remove('active');
+        showExamSettings();
+      });
+
+      // CLA option
+      elements.claOption.addEventListener('click', () => {
+        currentType = 'CLA';
+        elements.typeSlider.classList.remove('active');
+        showExamSettings();
+      });
+
+      // Show exam settings
+      function showExamSettings() {
+        elements.examSectionInput.value = `Section ${currentSection}`;
+        elements.examTypeInput.value = currentType;
+        elements.examSettingsModal.classList.add('active');
+        elements.overlay.classList.add('active');
+      }
+
+      // Cancel exam setup
+      elements.cancelExamBtn.addEventListener('click', () => {
+        elements.examSettingsModal.classList.remove('active');
+        elements.overlay.classList.remove('active');
+      });
+
+      // Save exam settings
+      elements.saveExamSettingsBtn.addEventListener('click', () => {
+        const examDuration = parseInt(document.getElementById('examDuration').value);
+        const tabSwitchLimit = parseInt(document.getElementById('tabSwitchLimit').value);
+
+        const examSettings = {
+          section: currentSection,
+          type: currentType,
+          duration: examDuration,
+          tabSwitchLimit: tabSwitchLimit,
+          questions: [
+            "What is the capital city of Brazil?",
+            "Solve for x: 2x + 5 = 15",
+            "Name three primary colors.",
+            "What is the chemical symbol for water?",
+            "If a triangle has angles 30° and 60°, what is the measure of the third angle?"
+          ]
+        };
+
+        localStorage.setItem('examSettings', JSON.stringify(examSettings));
+        elements.examSettingsModal.classList.remove('active');
+        elements.overlay.classList.remove('active');
+        showNotification('Task assigned successfully! Students can now take the exam.');
+      });
+
+      // Show notification
+      function showNotification(message) {
+        elements.notification.textContent = message;
+        elements.notification.classList.add('active');
+        setTimeout(() => {
+          elements.notification.classList.remove('active');
+        }, 3000);
+      }
+
+      // Show PDF in new tab
+      function showPdf(url) {
+        showNotification('Opening PDF in a new tab.');
+        window.open(url, '_blank');
+      }
+
+      // Close overlay when clicked
+      elements.overlay.addEventListener('click', (e) => {
+        if (e.target === elements.overlay) {
+          elements.sectionSlider.classList.remove('active');
+          elements.typeSlider.classList.remove('active');
+          elements.examSettingsModal.classList.remove('active');
+          elements.overlay.classList.remove('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Classroom</title>
+    <style>
+        :root {
+            --primary: #4364e8;
+            --primary-light: #303a5d;
+            --border: #2a2f45;
+            --text-dark: #e0e2e8;
+            --text-light: #a7acbe;
+            --danger: #f27474;
+            --success: #48c774;
+            --warning: #ffdd57;
+            --bg-dark: #171c33;
+            --bg-card: #232841;
+            --bg-hover: #2a304d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+        }
+        
+        header {
+            background-color: #121628;
+            padding: 8px 16px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        
+        nav {
+            margin-left: 42px;
+            display: flex;
+            gap: 24px;
+        }
+        
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 16px 0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        nav a.active {
+            color: var(--primary);
+            border-bottom: 4px solid var(--primary);
+        }
+        
+        .user-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 32px auto;
+            padding: 0 16px;
+        }
+        
+        .class-header {
+            background-color: var(--primary);
+            color: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .class-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .class-header p {
+            font-size: 14px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+        
+        .tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .tab.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .assignment-list, .exam-list, .material-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .assignment-item, .exam-item, .material-item {
+            background-color: var(--bg-hover);
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .assignment-info h3, .exam-info h3, .material-info h3 {
+            margin-bottom: 4px;
+            color: var(--primary);
+        }
+        
+        .assignment-meta, .exam-meta, .material-meta {
+            display: flex;
+            gap: 16px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--primary-light);
+            color: var(--text-dark);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .discussion-area {
+            margin-top: 24px;
+        }
+        
+        .discussion-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+        }
+        
+        .message {
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background-color: var(--bg-card);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .message-author {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .message-time {
+            color: var(--text-light);
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            resize: vertical;
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        input[type="text"], input[type="date"], input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: var(--bg-card);
+            padding: 24px;
+            border-radius: 8px;
+            width: 600px;
+            max-width: 90%;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 500;
+        }
+        
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/api/placeholder/32/32" alt="Classroom Logo">
+            Classroom
+        </div>
+        <nav id="mainNav">
+            <a href="#" class="active">My Classroom</a>
+            <a href="people.html" class="active">people</a>
+        </nav>
+        <div class="user-actions">
+            <div class="avatar" onclick="window.location.href='profile.html'">T</div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="class-header">
+            <h1 id="className">Computer Science 101</h1>
+            <p id="classInstructor">Instructor: Professor Smith</p>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('assignments')">Assignments</div>
+            <div class="tab" onclick="switchTab('exams')">Exams</div>
+            <div class="tab" onclick="switchTab('materials')">Materials</div>
+            <div class="tab" onclick="switchTab('discussion')">Discussion</div>
+        </div>
+        
+        <!-- Assignments Tab -->
+        <div id="assignments" class="tab-content active">
+            <button class="btn btn-primary" onclick="openAssignmentModal()">Create New Assignment</button>
+            
+            <div class="assignment-list" id="assignmentList">
+                <!-- Assignments will be added here -->
+            </div>
+        </div>
+        
+        <!-- Exams Tab -->
+        <div id="exams" class="tab-content">
+            <button class="btn btn-primary" onclick="openExamModal()">Create New Exam</button>
+            
+            <div class="exam-list" id="examList">
+                <!-- Exams will be added here -->
+            </div>
+        </div>
+        
+        <!-- Materials Tab -->
+        <div id="materials" class="tab-content">
+            <button class="btn btn-primary" onclick="openMaterialModal()">Upload New Material</button>
+            
+            <div class="material-list" id="materialList">
+                <!-- Materials will be added here -->
+            </div>
+        </div>
+        
+        <!-- Discussion Tab -->
+        <div id="discussion" class="tab-content">
+            <div class="discussion-list" id="discussionList">
+                <!-- Messages will be added here -->
+            </div>
+            
+            <div class="discussion-form">
+                <textarea id="messageInput" placeholder="Type your message to the class..."></textarea>
+                <button class="btn btn-primary" onclick="sendMessage()">Send Message</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Assignment Modal -->
+    <div id="assignmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create Assignment</h2>
+                <span class="close" onclick="closeModal('assignmentModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="assignmentTitle">Title</label>
+                    <input type="text" id="assignmentTitle" placeholder="Assignment title">
+                </div>
+                <div class="form-group">
+                    <label for="assignmentDescription">Description</label>
+                    <textarea id="assignmentDescription" placeholder="Assignment description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="assignmentDueDate">Due Date</label>
+                    <input type="date" id="assignmentDueDate">
+                </div>
+                <div class="form-group">
+                    <label for="assignmentFiles">Files (optional)</label>
+                    <input type="file" id="assignmentFiles" multiple>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('assignmentModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="createAssignment()">Create Assignment</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Exam Modal -->
+    <div id="examModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create Exam</h2>
+                <span class="close" onclick="closeModal('examModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="examTitle">Title</label>
+                    <input type="text" id="examTitle" placeholder="Exam title">
+                </div>
+                <div class="form-group">
+                    <label for="examDescription">Description</label>
+                    <textarea id="examDescription" placeholder="Exam description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="examDueDate">Due Date</label>
+                    <input type="date" id="examDueDate">
+                </div>
+                <div class="form-group">
+                    <label for="examDuration">Duration (minutes)</label>
+                    <input type="text" id="examDuration" placeholder="60">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('examModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="createExam()">Create Exam</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Material Modal -->
+    <div id="materialModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Upload Material</h2>
+                <span class="close" onclick="closeModal('materialModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="materialTitle">Title</label>
+                    <input type="text" id="materialTitle" placeholder="Material title">
+                </div>
+                <div class="form-group">
+                    <label for="materialDescription">Description</label>
+                    <textarea id="materialDescription" placeholder="Material description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="materialFiles">Files</label>
+                    <input type="file" id="materialFiles" multiple>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('materialModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="uploadMaterial()">Upload Material</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        let assignments = [
+            {
+                id: 1,
+                title: "Programming Assignment 1",
+                description: "Create a simple program that demonstrates basic programming concepts.",
+                dueDate: "2025-05-15",
+                files: []
+            },
+            {
+                id: 2,
+                title: "Data Structures Homework",
+                description: "Implement basic data structures in your preferred programming language.",
+                dueDate: "2025-05-22",
+                files: ["assignment2.pdf"]
+            }
+        ];
+        
+        let exams = [
+            {
+                id: 1,
+                title: "Midterm Exam",
+                description: "Covers chapters 1-5 from the textbook.",
+                dueDate: "2025-06-10",
+                duration: 90
+            }
+        ];
+        
+        let materials = [
+            {
+                id: 1,
+                title: "Lecture Slides Week 1",
+                description: "Introduction to programming concepts",
+                files: ["lecture1.pdf"]
+            },
+            {
+                id: 2,
+                title: "Reading Materials",
+                description: "Additional resources for the course",
+                files: ["reading1.pdf", "reading2.pdf"]
+            }
+        ];
+        
+        let messages = [
+            {
+                id: 1,
+                author: "Professor Smith",
+                time: "2025-04-10 10:30 AM",
+                content: "Welcome everyone to our class! Please review the syllabus before our first meeting."
+            },
+            {
+                id: 2,
+                author: "Student 1",
+                time: "2025-04-10 11:45 AM",
+                content: "I have a question about the first assignment. Can we use any programming language?"
+            }
+        ];
+        
+        // DOM elements
+        const assignmentList = document.getElementById('assignmentList');
+        const examList = document.getElementById('examList');
+        const materialList = document.getElementById('materialList');
+        const discussionList = document.getElementById('discussionList');
+        const messageInput = document.getElementById('messageInput');
+        
+        // Initialize the page
+        function initPage() {
+            renderAssignments();
+            renderExams();
+            renderMaterials();
+            renderMessages();
+        }
+        
+        // Switch between tabs
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Deactivate all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Activate selected tab
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // Render assignments
+        function renderAssignments() {
+            assignmentList.innerHTML = '';
+            
+            assignments.forEach(assignment => {
+                const assignmentItem = document.createElement('div');
+                assignmentItem.className = 'assignment-item';
+                assignmentItem.innerHTML = `
+                    <div class="assignment-info">
+                        <h3>${assignment.title}</h3>
+                        <p>${assignment.description}</p>
+                        <div class="assignment-meta">
+                            <span>Due: ${assignment.dueDate}</span>
+                            ${assignment.files.length > 0 ? <span>Files: ${assignment.files.join(', ')}</span> : ''}
+                        </div>
+                    </div>
+                    <div class="assignment-actions">
+                        <button class="btn btn-secondary">Edit</button>
+                        <button class="btn btn-danger">Delete</button>
+                    </div>
+                `;
+                assignmentList.appendChild(assignmentItem);
+            });
+        }
+        
+        // Render exams
+        function renderExams() {
+            examList.innerHTML = '';
+            
+            exams.forEach(exam => {
+                const examItem = document.createElement('div');
+                examItem.className = 'exam-item';
+                examItem.innerHTML = `
+                    <div class="exam-info">
+                        <h3>${exam.title}</h3>
+                        <p>${exam.description}</p>
+                        <div class="exam-meta">
+                            <span>Due: ${exam.dueDate}</span>
+                            <span>Duration: ${exam.duration} minutes</span>
+                        </div>
+                    </div>
+                    <div class="exam-actions">
+                        <button class="btn btn-secondary">Edit</button>
+                        <button class="btn btn-danger">Delete</button>
+                    </div>
+                `;
+                examList.appendChild(examItem);
+            });
+        }
+        
+        // Render materials
+        function renderMaterials() {
+            materialList.innerHTML = '';
+            
+            materials.forEach(material => {
+                const materialItem = document.createElement('div');
+                materialItem.className = 'material-item';
+                materialItem.innerHTML = `
+                    <div class="material-info">
+                        <h3>${material.title}</h3>
+                        <p>${material.description}</p>
+                        <div class="material-meta">
+                            <span>Files: ${material.files.join(', ')}</span>
+                        </div>
+                    </div>
+                    <div class="material-actions">
+                        <button class="btn btn-secondary">Edit</button>
+                        <button class="btn btn-danger">Delete</button>
+                    </div>
+                `;
+                materialList.appendChild(materialItem);
+            });
+        }
+        
+        // Render messages
+        function renderMessages() {
+            discussionList.innerHTML = '';
+            
+            messages.forEach(message => {
+                const messageItem = document.createElement('div');
+                messageItem.className = 'message';
+                messageItem.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-author">${message.author}</span>
+                        <span class="message-time">${message.time}</span>
+                    </div>
+                    <div class="message-content">${message.content}</div>
+                `;
+                discussionList.appendChild(messageItem);
+            });
+        }
+        
+        // Open assignment modal
+        function openAssignmentModal() {
+            document.getElementById('assignmentModal').style.display = 'flex';
+        }
+        
+        // Open exam modal
+        function openExamModal() {
+            document.getElementById('examModal').style.display = 'flex';
+        }
+        
+        // Open material modal
+        function openMaterialModal() {
+            document.getElementById('materialModal').style.display = 'flex';
+        }
+        
+        // Close modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Create new assignment
+        function createAssignment() {
+            const title = document.getElementById('assignmentTitle').value;
+            const description = document.getElementById('assignmentDescription').value;
+            const dueDate = document.getElementById('assignmentDueDate').value;
+            
+            if (!title || !description || !dueDate) {
+                alert('Please fill all required fields');
+                return;
+            }
+            
+            const newAssignment = {
+                id: assignments.length + 1,
+                title,
+                description,
+                dueDate,
+                files: [] // In real app, you'd process the files
+            };
+            
+            assignments.push(newAssignment);
+            renderAssignments();
+            closeModal('assignmentModal');
+        }
+        
+        // Create new exam
+        function createExam() {
+            const title = document.getElementById('examTitle').value;
+            const description = document.getElementById('examDescription').value;
+            const dueDate = document.getElementById('examDueDate').value;
+            const duration = document.getElementById('examDuration').value;
+            
+            if (!title || !description || !dueDate || !duration) {
+                alert('Please fill all required fields');
+                return;
+            }
+            
+            const newExam = {
+                id: exams.length + 1,
+                title,
+                description,
+                dueDate,
+                duration: parseInt(duration)
+            };
+            
+            exams.push(newExam);
+            renderExams();
+            closeModal('examModal');
+        }
+        
+        // Upload new material
+        function uploadMaterial() {
+            const title = document.getElementById('materialTitle').value;
+            const description = document.getElementById('materialDescription').value;
+            
+            if (!title || !description) {
+                alert('Please fill all required fields');
+                return;
+            }
+            
+            const newMaterial = {
+                id: materials.length + 1,
+                title,
+                description,
+                files: [] // In real app, you'd process the files
+            };
+            
+            materials.push(newMaterial);
+            renderMaterials();
+            closeModal('materialModal');
+        }
+        
+        // Send message
+        function sendMessage() {
+            const content = messageInput.value.trim();
+            
+            if (!content) {
+                alert('Please enter a message');
+                return;
+            }
+            
+            const newMessage = {
+                id: messages.length + 1,
+                author: "Professor Smith", // In real app, this would be the current user
+                time: new Date().toLocaleString(),
+                content
+            };
+            
+            messages.push(newMessage);
+            renderMessages();
+            messageInput.value = '';
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>

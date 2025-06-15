@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Classroom</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4364e8;
+            --primary-light: #303a5d;
+            --border: #2a2f45;
+            --text-dark: #e0e2e8;
+            --text-light: #a7acbe;
+            --bg-dark: #171c33;
+            --bg-card: #232841;
+            --bg-hover: #2a304d;
+            --success: #48c774;
+            --warning: #ffdd57;
+            --danger: #f27474;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+        }
+        
+        header {
+            background-color: #121628;
+            padding: 8px 16px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        
+        nav {
+            margin-left: 42px;
+            display: flex;
+            gap: 24px;
+        }
+        
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 16px 0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        nav a.active {
+            color: var(--primary);
+            border-bottom: 4px solid var(--primary);
+        }
+        
+        .user-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 32px auto;
+            padding: 0 16px;
+        }
+        
+        .class-header {
+            background-color: var(--primary);
+            color: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .class-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .class-header p {
+            font-size: 14px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+        
+        .tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .assignment-list, .exam-list, .material-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .assignment-item, .exam-item, .material-item {
+            background-color: var(--bg-hover);
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        .assignment-info h3, .exam-info h3, .material-info h3 {
+            margin-bottom: 4px;
+            color: var(--primary);
+        }
+        
+        .assignment-meta, .exam-meta, .material-meta {
+            display: flex;
+            gap: 16px;
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--primary-light);
+            color: var(--text-dark);
+        }
+        
+        .btn-margin {
+            margin-top: 12px;
+        }
+        
+        .discussion-area {
+            margin-top: 24px;
+        }
+        
+        .discussion-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+        }
+        
+        .message {
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background-color: var(--bg-card);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .message-author {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .message-time {
+            color: var(--text-light);
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            resize: vertical;
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        
+        .file-link {
+            color: var(--primary);
+            text-decoration: none;
+            margin-right: 12px;
+        }
+        
+        .file-link:hover {
+            text-decoration: underline;
+        }
+        
+        .submission-status {
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: inline-block;
+        }
+        
+        .submitted {
+            background-color: rgba(72, 199, 116, 0.2);
+            color: var(--success);
+        }
+        
+        .pending {
+            background-color: rgba(255, 221, 87, 0.2);
+            color: var(--warning);
+        }
+        
+        .overdue {
+            background-color: rgba(242, 116, 116, 0.2);
+            color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="Classroom Logo" onerror="this.src='https://via.placeholder.com/32'">
+            Classroom
+        </div>
+        <nav id="mainNav">
+            <a href="#" class="active" aria-label="Go to My Classroom">My Classroom</a>
+        </nav>
+        <div class="user-actions">
+            <div class="avatar" tabindex="0" aria-label="Go to Profile" onclick="window.location.href='profile.html'">S</div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="class-header">
+            <h1 id="className">Computer Science 101</h1>
+            <p id="classInstructor">Instructor: Professor Smith</p>
+        </div>
+        
+        <div class="tabs">
+            <button type="button" class="tab active" onclick="switchTab('assignments')" aria-label="View Assignments">Assignments</button>
+            <button type="button" class="tab" onclick="switchTab('exams')" aria-label="View Exams">Exams</button>
+            <button type="button" class="tab" onclick="switchTab('materials')" aria-label="View Materials">Materials</button>
+            <button type="button" class="tab" onclick="switchTab('discussion')" aria-label="View Discussion">Discussion</button>
+        </div>
+        
+        <!-- Assignments Tab -->
+        <div id="assignments" class="tab-content active">
+            <div class="assignment-list" id="assignmentList"></div>
+        </div>
+        
+        <!-- Exams Tab -->
+        <div id="exams" class="tab-content">
+            <div class="exam-list" id="examList"></div>
+        </div>
+        
+        <!-- Materials Tab -->
+        <div id="materials" class="tab-content">
+            <div class="material-list" id="materialList"></div>
+        </div>
+        
+        <!-- Discussion Tab -->
+        <div id="discussion" class="tab-content">
+            <div class="discussion-list" id="discussionList"></div>
+            <div class="discussion-form">
+                <textarea id="messageInput" placeholder="Type your question or message to the class..." aria-label="Type your message"></textarea>
+                <button class="btn btn-primary" onclick="sendMessage()" aria-label="Send Message">Send Message</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const assignments = [
+            {
+                id: 1,
+                title: "Programming Assignment 1",
+                description: "Create a simple program that demonstrates basic programming concepts.",
+                dueDate: "2025-05-15",
+                files: ["assignment1_instructions.pdf"],
+                status: "submitted",
+                submissionDate: "2025-05-14"
+            },
+            {
+                id: 2,
+                title: "Data Structures Homework",
+                description: "Implement basic data structures in your preferred programming language.",
+                dueDate: "2025-05-22",
+                files: ["assignment2_instructions.pdf"],
+                status: "pending"
+            }
+        ];
+        
+        const exams = [
+            {
+                id: 1,
+                title: "Midterm Exam",
+                description: "Covers chapters 1-5 from the textbook. Duration: 90 minutes.",
+                date: "2025-06-10",
+                time: "10:00 AM",
+                location: "Room 205"
+            }
+        ];
+        
+        const materials = [
+            {
+                id: 1,
+                title: "Lecture Slides Week 1",
+                description: "Introduction to programming concepts",
+                files: ["lecture1.pdf"]
+            },
+            {
+                id: 2,
+                title: "Reading Materials",
+                description: "Additional resources for the course",
+                files: ["reading1.pdf", "reading2.pdf"]
+            }
+        ];
+        
+        let messages = [
+            {
+                id: 1,
+                author: "Professor Smith",
+                time: "2025-04-10 10:30 AM",
+                content: "Welcome everyone to our class! Please review the syllabus before our first meeting."
+            },
+            {
+                id: 2,
+                author: "Student 1",
+                time: "2025-04-10 11:45 AM",
+                content: "I have a question about the first assignment. Can we use any programming language?"
+            },
+            {
+                id: 3,
+                author: "Professor Smith",
+                time: "2025-04-10 12:15 PM",
+                content: "Yes, you can use any programming language for Assignment 1."
+            }
+        ];
+        
+        // DOM elements
+        const assignmentList = document.getElementById('assignmentList');
+        const examList = document.getElementById('examList');
+        const materialList = document.getElementById('materialList');
+        const discussionList = document.getElementById('discussionList');
+        const messageInput = document.getElementById('messageInput');
+        
+        // Initialize the page
+        function initPage() {
+            renderAssignments();
+            renderExams();
+            renderMaterials();
+            renderMessages();
+        }
+        
+        // Switch between tabs
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
+        }
+        
+        // Check if assignment is overdue
+        function isOverdue(dueDate) {
+            const today = new Date('2025-04-11'); // Hardcoded per context; replace with new Date() in production
+            const due = new Date(dueDate);
+            return due < today;
+        }
+        
+        // Render assignments
+        function renderAssignments() {
+            assignmentList.innerHTML = '';
+            
+            assignments.forEach(assignment => {
+                const isLate = isOverdue(assignment.dueDate) && assignment.status === 'pending';
+                const statusClass = isLate ? 'overdue' : assignment.status;
+                const statusText = assignment.status === 'submitted' 
+                    ? `Submitted on ${assignment.submissionDate}` 
+                    : isLate ? 'Overdue' : 'Pending';
+                
+                const assignmentItem = document.createElement('div');
+                assignmentItem.className = 'assignment-item';
+                assignmentItem.innerHTML = `
+                    <div class="assignment-info">
+                        <h3>${assignment.title}</h3>
+                        <p>${assignment.description}</p>
+                        <div class="assignment-meta">
+                            <span>Due: ${assignment.dueDate}</span>
+                            <span class="submission-status ${statusClass}">${statusText}</span>
+                        </div>
+                        ${assignment.files.map(file => `
+                            <a href="#" class="file-link" aria-label="Download ${file}">${file}</a>
+                        `).join('')}
+                    </div>
+                    <button class="btn btn-primary btn-margin" onclick="handleAssignmentAction(${assignment.id}, '${assignment.status}')">
+                        ${assignment.status === 'submitted' ? 'View Submission' : 'Submit Work'}
+                    </button>
+                `;
+                assignmentList.appendChild(assignmentItem);
+            });
+        }
+        
+        // Render exams
+        function renderExams() {
+            examList.innerHTML = '';
+            
+            exams.forEach(exam => {
+                const examItem = document.createElement('div');
+                examItem.className = 'exam-item';
+                examItem.innerHTML = `
+                    <div class="exam-info">
+                        <h3>${exam.title}</h3>
+                        <p>${exam.description}</p>
+                        <div class="exam-meta">
+                            <span>Date: ${exam.date}</span>
+                            <span>Time: ${exam.time}</span>
+                            <span>Location: ${exam.location}</span>
+                        </div>
+                    </div><a href="/Student-Exam.html" class="btn btn-primary btn-margin">
+  <button class="btn btn-primary btn-margin">View Exam Details</button>
+</a>
+                `;
+                examList.appendChild(examItem);
+            });
+        }
+        
+        // Render materials
+        function renderMaterials() {
+            materialList.innerHTML = '';
+            
+            materials.forEach(material => {
+                const materialItem = document.createElement('div');
+                materialItem.className = 'material-item';
+                materialItem.innerHTML = `
+                    <div class="material-info">
+                        <h3>${material.title}</h3>
+                        <p>${material.description}</p>
+                        <div class="material-meta">
+                            ${material.files.map(file => `
+                                <a href="#" class="file-link" aria-label="Download ${file}">${file}</a>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                materialList.appendChild(materialItem);
+            });
+        }
+        
+        // Render messages
+        function renderMessages() {
+            discussionList.innerHTML = '';
+            
+            messages.forEach(message => {
+                const messageItem = document.createElement('div');
+                messageItem.className = 'message';
+                messageItem.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-author">${message.author}</span>
+                        <span class="message-time">${message.time}</span>
+                    </div>
+                    <div class="message-content">${message.content}</div>
+                `;
+                discussionList.appendChild(messageItem);
+            });
+        }
+        
+        // Send message
+        function sendMessage() {
+            const content = messageInput.value.trim();
+            
+            if (!content) {
+                alert('Please enter a message');
+                return;
+            }
+            
+            const newMessage = {
+                id: messages.length + 1,
+                author: "You",
+                time: new Date().toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }),
+                content
+            };
+            
+            messages.push(newMessage);
+            renderMessages();
+            messageInput.value = '';
+            
+            discussionList.scrollTo({ top: discussionList.scrollHeight, behavior: 'smooth' });
+        }
+        
+        // Placeholder handlers
+        function handleAssignmentAction(id, status) {
+            if (status === 'submitted') {
+                alert(`Viewing submission for Assignment ${id}`);
+                // Replace with actual navigation, e.g., window.location.href = `/submission/${id}`;
+            } else {
+                alert(`Submitting work for Assignment ${id}`);
+                // Replace with actual submission logic
+            }
+        }
+        
+        function viewExamDetails(id) {
+            alert(`Viewing details for Exam ${id}`);
+            // Replace with actual navigation, e.g., window.location.href = `/exam/${id}`;
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initPage);
+//         setTimeout(() => {
+//     window.location.href = 'dashboard.html'; // Replace with your dashboard page URL
+//   }, 2000); // Delay to allow the notification to be visible before redirecting
+
+    </script>
+</body>
+</html>

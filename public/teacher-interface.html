@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Dashboard</title>
+    <style>
+        :root {
+            --primary: #4364e8;
+            --secondary: #303a5d;
+            --border: #2a2f45;
+            --text: #e0e2e8;
+            --text-muted: #a7acbe;
+            --danger: #f27474;
+            --success: #48c774;
+            --bg: #171c33;
+            --card-bg: #232841;
+            --hover-bg: #2a304d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        header {
+            background: var(--card-bg);
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        nav {
+            margin-left: 2rem;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        nav a.active, nav a:hover {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .avatar {
+            margin-left: auto;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .class-header {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 0.25rem 0.25rem 0 0;
+            color: var(--text-muted);
+        }
+
+        .tab.active {
+            background: var(--card-bg);
+            color: var(--text);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--hover-bg);
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-info h3 {
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .item-meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .discussion-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            padding: 0.75rem;
+            background: var(--card-bg);
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .message-author {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        textarea, input[type="text"], input[type="date"], input[type="file"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.25rem;
+            background: var(--bg);
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            width: 500px;
+            max-width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .close {
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Classroom</div>
+        <nav>
+            <a href="index.html" class="active">Dashboard</a>
+            <a href="people.html">People</a>
+        </nav>
+        <div class="avatar" onclick="window.location.href='profile.html'">T</div>
+    </header>
+
+    <div class="container">
+        <div class="class-header">
+            <h1>Computer Science 101</h1>
+            <p>Instructor: Professor Smith</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="assignments">Assignments</div>
+            <div class="tab" data-tab="exams">Exams</div>
+            <div class="tab" data-tab="materials">Materials</div>
+            <div class="tab" data-tab="discussion">Discussion</div>
+        </div>
+
+        <div id="assignments" class="tab-content active">
+            <button class="btn btn-primary" onclick="openModal('assignment')">New Assignment</button>
+            <div id="assignment-list"></div>
+        </div>
+
+        <div id="exams" class="tab-content">
+            <a href="setup_examT.html" class="btn btn-primary" >New Exam</a>
+            <div id="exam-list"></div>
+        </div>
+        <div id="materials" class="tab-content">
+            <button class="btn btn-primary" onclick="openModal('material')">New Material</button>
+            <div id="material-list"></div>
+        </div>
+
+        <div id="discussion" class="tab-content">
+            <div class="discussion-list" id="discussion-list"></div>
+            <textarea id="message-input" placeholder="Type a message..."></textarea>
+            <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="assignment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>New Assignment</h2>
+                <span class="close" onclick="closeModal('assignment')">×</span>
+            </div>
+            <div class="form-group">
+                <label for="assignment-title">Title</label>
+                <input type="text" id="assignment-title">
+            </div>
+            <div class="form-group">
+                <label for="assignment-desc">Description</label>
+                <textarea id="assignment-desc"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="assignment-due">Due Date</label>
+                <input type="date" id="assignment-due">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="closeModal('assignment')">Cancel</button>
+                <button class="btn btn-primary" onclick="createItem('assignment')">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="exam-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>New Exam</h2>
+                <span class="close" onclick="closeModal('exam')">×</span>
+            </div>
+            <div class="form-group">
+                <label for="exam-title">Title</label>
+                <input type="text" id="exam-title">
+            </div>
+            <div class="form-group">
+                <label for="exam-desc">Description</label>
+                <textarea id="exam-desc"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="exam-due">Due Date</label>
+                <input type="date" id="exam-due">
+            </div>
+            <div class="form-group">
+                <label for="exam-duration">Duration (minutes)</label>
+                <input type="text" id="exam-duration">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="closeModal('exam')">Cancel</button>
+                <button class="btn btn-primary" onclick="createItem('exam')">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="material-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>New Material</h2>
+                <span class="close" onclick="closeModal('material')">×</span>
+            </div>
+            <div class="form-group">
+                <label for="material-title">Title</label>
+                <input type="text" id="material-title">
+            </div>
+            <div class="form-group">
+                <label for="material-desc">Description</label>
+                <textarea id="material-desc"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="material-files">Files</label>
+                <input type="file" id="material-files" multiple>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="closeModal('material')">Cancel</button>
+                <button class="btn btn-primary" onclick="createItem('material')">Upload</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            assignments: [
+                { id: 1, title: "Programming Assignment", desc: "Write a simple program.", due: "2025-05-15" }
+            ],
+            exams: [
+                { id: 1, title: "Midterm", desc: "Covers chapters 1-4.", due: "2025-06-10", duration: 90 }
+            ],
+            materials: [
+                { id: 1, title: "Week 1 Slides", desc: "Intro to programming.", files: ["slides.pdf"] }
+            ],
+            messages: [
+                { id: 1, author: "Professor Smith", time: "2025-04-10 10:00", content: "Welcome to the class!" }
+            ]
+        };
+
+        function renderItems(type) {
+            const list = document.getElementById(`${type}-list`);
+            list.innerHTML = '';
+            data[type + 's'].forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.innerHTML = `
+                    <div class="item-info">
+                        <h3>${item.title}</h3>
+                        <p>${item.desc}</p>
+                        <div class="item-meta">
+                            ${item.due ? `<span>Due: ${item.due}</span>` : ''}
+                            ${item.duration ? `<span>${item.duration} mins</span>` : ''}
+                            ${item.files ? `<span>Files: ${item.files.join(', ')}</span>` : ''}
+                        </div>
+                    </div>
+                    <button class="btn btn-danger" onclick="deleteItem('${type}', ${item.id})">Delete</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+            document.getElementById(tab).classList.add('active');
+        }
+
+        function openModal(type) {
+            document.getElementById(`${type}-modal`).style.display = 'flex';
+        }
+
+        function closeModal(type) {
+            document.getElementById(`${type}-modal`).style.display = 'none';
+            document.querySelectorAll(`#${type}-modal input, #${type}-modal textarea`).forEach(el => el.value = '');
+        }
+
+        function createItem(type) {
+            const title = document.getElementById(`${type}-title`).value;
+            const desc = document.getElementById(`${type}-desc`).value;
+            if (!title || !desc) {
+                alert('Title and description are required.');
+                return;
+            }
+
+            const item = { id: data[type + 's'].length + 1, title, desc };
+            if (type === 'assignment' || type === 'exam') {
+                item.due = document.getElementById(`${type}-due`).value;
+                if (!item.due) {
+                    alert('Due date is required.');
+                    return;
+                }
+            }
+            if (type === 'exam') {
+                item.duration = parseInt(document.getElementById('exam-duration').value);
+                if (!item.duration) {
+                    alert('Duration is required.');
+                    return;
+                }
+            }
+            if (type === 'material') {
+                item.files = []; // Placeholder for file handling
+            }
+
+            data[type + 's'].push(item);
+            renderItems(type);
+            closeModal(type);
+        }
+
+        function deleteItem(type, id) {
+            data[type + 's'] = data[type + 's'].filter(item => item.id !== id);
+            renderItems(type);
+        }
+
+        function sendMessage() {
+            const content = document.getElementById('message-input').value.trim();
+            if (!content) {
+                alert('Message cannot be empty.');
+                return;
+            }
+            data.messages.push({
+                id: data.messages.length + 1,
+                author: "Professor Smith",
+                time: new Date().toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }),
+                content
+            });
+            renderMessages();
+            document.getElementById('message-input').value = '';
+        }
+
+        function renderMessages() {
+            const list = document.getElementById('discussion-list');
+            list.innerHTML = '';
+            data.messages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = 'message';
+                div.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-author">${msg.author}</span>
+                        <span>${msg.time}</span>
+                    </div>
+                    <p>${msg.content}</p>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function setActiveNav() {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            document.querySelectorAll('nav a').forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === currentPage);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setActiveNav();
+            renderItems('assignment');
+            renderItems('exam');
+            renderItems('material');
+            renderMessages();
+
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+            });
+        });
+    </script>
+</body>
+</html>

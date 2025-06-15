@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pytesseract
+pillow
+pdfplumber
+python-docx
+pdf2image
+PyPDF2
+reportlab
+docx2pdf
+Jinja2
+python-multipart  # Required for file uploads with FastAPI
+spacy

@@ -1,0 +1,286 @@
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from starlette.requests import Request
+import random
+import os
+import logging
+import shutil
+from typing import List, Optional
+from pathlib import Path
+import pdfplumber  # Replace PyPDF2 with pdfplumber
+import docx
+import zipfile
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+import re
+
+app = FastAPI()
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+
+# Ensure static directory exists
+Path("static").mkdir(exist_ok=True)
+
+def shuffle_array(array: List[str]) -> List[str]:
+    array_copy = array.copy()
+    random.shuffle(array_copy)
+    return array_copy
+
+def extract_text_from_pdf(file: UploadFile) -> List[str]:
+    # Save the uploaded file temporarily to disk since pdfplumber needs a file path
+    temp_file_path = f"temp_{file.filename}"
+    with open(temp_file_path, "wb") as temp_file:
+        shutil.copyfileobj(file.file, temp_file)
+    
+    questions = []
+    current_question = []
+    question_start_pattern = re.compile(r"^\s*(\d+\.|\d+\)|\d+\s*-|\s*[A-Z]\d*\.|Q\d+\.)")
+    
+    try:
+        with pdfplumber.open(temp_file_path) as pdf:
+            for page in pdf.pages:
+                # Extract text with layout preservation
+                text = page.extract_text(layout=True)
+                if not text:
+                    continue
+                
+                lines = text.split("\n")
+                for line in lines:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    
+                    # Skip likely headers: short lines, all caps, or no numbers
+                    is_short = len(line) < 25
+                    is_all_caps = line.isupper()
+                    has_no_number = not any(c.isdigit() for c in line)
+                    if is_short and (is_all_caps or has_no_number):
+                        continue
+                    
+                    # If this line starts a new question
+                    if question_start_pattern.match(line):
+                        if current_question:
+                            question_text = " ".join(current_question).strip()
+                            questions.append(question_text)
+                            current_question = []
+                    
+                    current_question.append(line)
+                
+                # Add the last question on the page
+                if current_question:
+                    question_text = " ".join(current_question).strip()
+                    questions.append(question_text)
+                    current_question = []
+    
+    finally:
+        # Clean up the temporary file
+        if os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
+    
+    # Filter out invalid or too-short entries
+    questions = [q for q in questions if q and len(q) > 15]
+    logger.info(f"Extracted {len(questions)} questions from PDF: {questions}")
+    return questions
+
+def extract_text_from_docx(file: UploadFile) -> List[str]:
+    doc = docx.Document(file.file)
+    text = "\n".join([para.text for para in doc.paragraphs])
+    questions = [q.strip() for q in text.split("\n") if q.strip()]
+    return questions
+
+def extract_text_from_txt(file: UploadFile) -> List[str]:
+    content = file.file.read().decode("utf-8")
+    questions = [q.strip() for q in content.split("\n") if q.strip()]
+    return questions
+
+def generate_pdf(student_name: str, questions: List[str], output_path: str):
+    c = canvas.Canvas(output_path, pagesize=letter)
+    c.setFont("Helvetica", 12)
+    c.drawString(100, 750, f"Questions for {student_name}")
+    y = 700
+    line_height = 14
+    
+    for i, question in enumerate(questions, 1):
+        parts = re.split(r"(\([a-z]\)|[A-Z]\.)", question)
+        main_text = parts[0].strip()
+        
+        text_object = c.beginText(100, y)
+        text_object.setFont("Helvetica", 12)
+        text_object.setLeading(line_height)
+        
+        main_text = f"{i}. {main_text}"
+        words = main_text.split()
+        current_line = ""
+        
+        for word in words:
+            if c.stringWidth(current_line + word + " ", "Helvetica", 12) < 400:
+                current_line += word + " "
+            else:
+                text_object.textLine(current_line)
+                current_line = word + " "
+                y -= line_height
+                if y < 50:
+                    c.drawText(text_object)
+                    c.showPage()
+                    y = 750
+                    text_object = c.beginText(100, y)
+                    text_object.setFont("Helvetica", 12)
+                    text_object.setLeading(line_height)
+        if current_line:
+            text_object.textLine(current_line)
+            y -= line_height
+        
+        c.drawText(text_object)
+        
+        if len(parts) > 1:
+            for j in range(1, len(parts), 2):
+                option_marker = parts[j]
+                option_text = parts[j + 1].strip() if j + 1 < len(parts) else ""
+                if y < 50:
+                    c.showPage()
+                    y = 750
+                
+                text_object = c.beginText(120, y)
+                text_object.setFont("Helvetica", 12)
+                text_object.setLeading(line_height)
+                
+                option_line = f"{option_marker} {option_text}"
+                words = option_line.split()
+                current_line = ""
+                for word in words:
+                    if c.stringWidth(current_line + word + " ", "Helvetica", 12) < 380:
+                        current_line += word + " "
+                    else:
+                        text_object.textLine(current_line)
+                        current_line = word + " "
+                        y -= line_height
+                        if y < 50:
+                            c.drawText(text_object)
+                            c.showPage()
+                            y = 750
+                            text_object = c.beginText(120, y)
+                            text_object.setFont("Helvetica", 12)
+                            text_object.setLeading(line_height)
+                if current_line:
+                    text_object.textLine(current_line)
+                    y -= line_height
+                
+                c.drawText(text_object)
+        
+        y -= 10
+        if y < 50:
+            c.showPage()
+            y = 750
+    
+    c.save()
+
+@app.get("/")
+async def read_root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.post("/upload-and-generate/")
+async def upload_and_generate(
+    files: List[UploadFile] = File(...),
+    student_count: int = Form(...),
+    questions_per_bank: int = Form(...),
+    student_names_file: Optional[UploadFile] = File(None),
+    zip_download: bool = Form(False)
+):
+    question_banks = []
+    for file in files:
+        if file.filename.endswith(".pdf"):
+            questions = extract_text_from_pdf(file)
+        elif file.filename.endswith(".docx"):
+            questions = extract_text_from_docx(file)
+        elif file.filename.endswith(".txt"):
+            questions = extract_text_from_txt(file)
+        else:
+            raise HTTPException(status_code=400, detail=f"Unsupported file type: {file.filename}")
+        logger.info(f"Extracted {len(questions)} questions from {file.filename}")
+        question_banks.append(questions)
+
+    student_names = [f"Student {i+1}" for i in range(student_count)]
+    if student_names_file:
+        content = student_names_file.file.read().decode("utf-8")
+        student_names = [name.strip() for name in content.split("\n") if name.strip()]
+        if len(student_names) < student_count:
+            raise HTTPException(status_code=400, detail=f"Not enough student names provided. Need {student_count}, got {len(student_names)}")
+        student_names = student_names[:student_count]
+    logger.info(f"Student names: {student_names}")
+
+    number_of_banks = len(question_banks)
+    questions_per_student = questions_per_bank * number_of_banks
+    total_questions_needed = student_count * questions_per_student
+    for i, bank in enumerate(question_banks):
+        if len(bank) < questions_per_bank:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Not enough questions in bank {i+1}! Need {questions_per_bank} per student, but only {len(bank)} available."
+            )
+        if len(bank) < questions_per_bank * student_count:
+            logger.warning(f"Bank {i+1} has {len(bank)} questions, but {questions_per_bank * student_count} unique questions are needed. Some questions will be reused.")
+
+    assignments = {}
+    used_questions_per_bank = [set() for _ in range(number_of_banks)]
+    
+    for i in range(student_count):
+        student_name = student_names[i]
+        assignments[student_name] = []
+        
+        for bank_idx, bank in enumerate(question_banks):
+            available_questions = [q for idx, q in enumerate(bank) if idx not in used_questions_per_bank[bank_idx]]
+            if len(available_questions) < questions_per_bank:
+                used_questions_per_bank[bank_idx].clear()
+                available_questions = bank.copy()
+            
+            shuffled_questions = shuffle_array(available_questions)
+            selected = shuffled_questions[:questions_per_bank]
+            
+            for question in selected:
+                question_idx = bank.index(question)
+                used_questions_per_bank[bank_idx].add(question_idx)
+            
+            assignments[student_name].extend(selected)
+        
+        logger.info(f"Assigned to {student_name}: {assignments[student_name]}")
+
+    pdf_links = {}
+    for student_name, questions in assignments.items():
+        output_path = f"static/{student_name.lower().replace(' ', '_')}.pdf"
+        generate_pdf(student_name, questions, output_path)
+        logger.info(f"Generated PDF: {output_path}")
+        pdf_links[student_name] = f"/{output_path}"
+
+    zip_link = None
+    if zip_download:
+        zip_path = "static/student_questions.zip"
+        with zipfile.ZipFile(zip_path, 'w') as zf:
+            for student_name, questions in assignments.items():
+                pdf_path = f"static/{student_name.lower().replace(' ', '_')}.pdf"
+                zf.write(pdf_path, f"{student_name}.pdf")
+        logger.info(f"Generated ZIP: {zip_path}")
+        zip_link = f"/{zip_path}"
+
+    return {"pdf_links": pdf_links, "zip_link": zip_link}
+
+@app.get("/download-zip")
+async def download_zip():
+    zip_path = "static/assignments.zip"
+    if not os.path.exists(zip_path):
+        with zipfile.ZipFile(zip_path, 'w') as zf:
+            for pdf_file in Path("static").glob("*.pdf"):
+                zf.write(pdf_file, pdf_file.name)
+        logger.info(f"Generated ZIP for download: {zip_path}")
+    return FileResponse(zip_path, media_type='application/zip', filename="assignments.zip")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

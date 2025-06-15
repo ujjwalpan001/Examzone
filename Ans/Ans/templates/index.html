@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handwritten Answer Checker</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <h1>Handwritten Answer Checker</h1>
+
+    <h2>Only Answer Sheet</h2>
+    <form action="/check-answer" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" required>
+        <input type="text" name="marks" placeholder='e.g., [1, 1, 1]' required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Both Question and Answer Sheets</h2>
+    <form action="/check-answer-sheets" method="post" enctype="multipart/form-data">
+        <input type="file" name="question_file" accept=".pdf" required>
+        <input type="file" name="answer_file" accept=".pdf" required>
+        <input type="text" name="marks" placeholder='e.g., [1, 1, 1, 1, 1]' required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script src="static\script.js"></script>
+</body>
+</html>

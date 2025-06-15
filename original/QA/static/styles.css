@@ -1,0 +1,260 @@
+/* Root variables for consistent theming */
+:root {
+    --primary-color: #38bdf8; /* Bright cyan for accents */
+    --secondary-color: #818cf8; /* Soft purple for secondary accents */
+    --bg-dark: #0f0f17; /* Deep dark background */
+    --card-bg: #1c1c2c; /* Slightly lighter card background */
+    --text-light: #f1f1f1; /* Light text for readability */
+    --text-muted: #c0c0c0; /* Muted text for secondary info */
+    --border-color: rgba(56, 189, 248, 0.2); /* Subtle cyan border */
+    --shadow-color: rgba(0, 0, 0, 0.5); /* Shadow for depth */
+  }
+  
+  /* Global reset and base styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, var(--bg-dark), #1e1e2f);
+    color: var(--text-light);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+  
+  /* Container styling */
+  .container {
+    max-width: 800px;
+    width: 100%;
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px var(--shadow-color);
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(56, 189, 248, 0.2);
+  }
+  
+  /* Headings */
+  h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+    position: relative;
+  }
+  
+  h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+  }
+  
+  h2 {
+    font-size: 1.8rem;
+    color: var(--secondary-color);
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  
+  h3 {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    margin: 1.5rem 0 1rem;
+  }
+  
+  /* Section styling */
+  section {
+    margin-bottom: 2rem;
+  }
+  
+  /* Form styling */
+  form#uploadForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  form div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  /* Labels */
+  label {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  /* Inputs */
+  input[type="file"],
+  input[type="number"],
+  input[type="text"] {
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  input[type="file"]:hover,
+  input[type="number"]:hover,
+  input[type="text"]:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+  }
+  
+  input[type="file"]:focus,
+  input[type="number"]:focus,
+  input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* File input styling */
+  input[type="file"] {
+    cursor: pointer;
+  }
+  
+  span#fileNames,
+  span#studentFileNames {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+  }
+  
+  /* Checkbox styling */
+  input[type="checkbox"] {
+    appearance: none;
+    width: 1.2rem;
+    height: 1.2rem;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  input[type="checkbox"]:checked {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    position: relative;
+  }
+  
+  input[type="checkbox"]:checked::after {
+    content: '\2713';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-light);
+    font-size: 0.8rem;
+  }
+  
+  label[for="zipDownload"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+  
+  /* Button styling */
+  button[type="submit"] {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    color: var(--text-light);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    align-self: center;
+  }
+  
+  button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
+    background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+  }
+  
+  button[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(56, 189, 248, 0.2);
+  }
+  
+  /* Result section */
+  #result {
+    margin-top: 2rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    text-align: center;
+    min-height: 50px;
+  }
+  
+  /* Note section */
+  section p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+  }
+  
+  section p strong {
+    color: var(--primary-color);
+  }
+  
+  /* Responsive design */
+  @media (max-width: 600px) {
+    .container {
+      padding: 1.5rem;
+    }
+  
+    h1 {
+      font-size: 2rem;
+    }
+  
+    h2 {
+      font-size: 1.5rem;
+    }
+  
+    button[type="submit"] {
+      width: 100%;
+    }
+  }
+  
+  /* Focus states for accessibility */
+  input:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }

@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Exam Portal - Student</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #171C33;
+      color: #e0e0e0;
+      overflow-x: hidden;
+    }
+    
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .navbar {
+      background-color: #0a1640;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    .navbar h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .take-exam-btn {
+      background-color: #4a5de2;
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .take-exam-btn:hover {
+      background-color: #3949c3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(74, 93, 226, 0.4);
+    }
+    
+    .exam-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #171C33;
+      z-index: 200;
+      overflow-y: auto;
+    }
+    
+    .exam-container.active {
+      display: block;
+    }
+    
+    .exam-header {
+      background-color: #0a1640;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 201;
+    }
+    
+    .timer {
+      background-color: #262f52;
+      padding: 8px 15px;
+      border-radius: 5px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    
+    .exam-content {
+      padding: 20px;
+      margin-bottom: 80px;
+    }
+    
+    .question-item {
+      background-color: #262f52;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .exam-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #0a1640;
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      z-index: 201;
+    }
+    
+    .submit-exam {
+      background-color: #8b2a2a;
+      color: white;
+      border: none;
+      padding: 10px 30px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .submit-exam:hover {
+      background-color: #a33232;
+    }
+    
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #2c6536;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 5px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 300;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+    }
+    
+    .notification.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .upload-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #171C33;
+      z-index: 210;
+      overflow-y: auto;
+    }
+    
+    .upload-container.active {
+      display: block;
+    }
+    
+    .upload-header {
+      background-color: #0a1640;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 211;
+    }
+    
+    .upload-content {
+      padding: 30px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .upload-box {
+      background-color: #212845;
+      border-radius: 10px;
+      padding: 30px;
+      margin-bottom: 30px;
+      text-align: center;
+      border: 2px dashed #4a5de2;
+    }
+    
+    .upload-box h3 {
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    
+    .upload-box p {
+      margin-bottom: 20px;
+      color: #b4b4b4;
+    }
+    
+    .file-input-wrapper {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    
+    .file-input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+    
+    .file-input-button {
+      background-color: #4a5de2;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 5px;
+      display: inline-block;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .file-input-button:hover {
+      background-color: #3949c3;
+    }
+    
+    .file-list {
+      margin-top: 20px;
+      text-align: left;
+    }
+    
+    .file-item {
+      background-color: #262f52;
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .file-name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-right: 10px;
+    }
+    
+    .remove-file {
+      background-color: #8b2a2a;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .final-submit-btn {
+      background-color: #2c6536;
+      color: white;
+      border: none;
+      padding: 12px 40px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: block;
+      margin: 30px auto 0;
+    }
+    
+    .final-submit-btn:hover {
+      background-color: #347a40;
+    }
+    
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #212845;
+      padding: 25px;
+      border-radius: 10px;
+      z-index: 110;
+      display: none;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+    }
+    
+    .modal.active {
+      display: block;
+    }
+    
+    .modal-title {
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: #fff;
+      text-align: center;
+    }
+    
+    .modal-content {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .end-btn {
+      background-color: #8b2a2a;
+      color: white;
+      border: none;
+      padding: 15px 60px;
+      font-size: 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 20px auto 0;
+      display: block;
+    }
+    
+    .end-btn:hover {
+      background-color: #a33232;
+    }
+    
+    .tab-warning {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 15px;
+      background-color: #8b2a2a;
+      color: white;
+      text-align: center;
+      z-index: 1000;
+      display: none;
+    }
+    
+    .tab-warning.active {
+      display: block;
+    }
+    
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 90;
+      display: none;
+    }
+    
+    .overlay.active {
+      display: block;
+    }
+    
+    .exam-active .container {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="navbar">
+      <h1>Secure Exam Portal - Student</h1>
+    </div>
+    
+    <div class="main-content">
+      <button class="take-exam-btn" id="takeExamBtn">Take Exam</button>
+    </div>
+  </div>
+  
+  <!-- Tab Warning -->
+  <div class="tab-warning" id="tabWarning">
+    <p>WARNING: Tab switching detected! <span id="tabWarningCount"></span> more switches will result in automatic submission.</p>
+  </div>
+  
+  <!-- Exam Interface -->
+  <div class="exam-container" id="examContainer">
+    <div class="exam-header">
+      <h2>Exam: <span id="examTitle"></span></h2>
+      <div class="timer" id="examTimer">00:00:00</div>
+    </div>
+    
+    <div class="exam-content" id="examContent">
+      <!-- Exam questions will be populated here -->
+    </div>
+    
+    <div class="exam-footer">
+      <button class="submit-exam" id="submitExamBtn">Submit Exam</button>
+    </div>
+  </div>
+  
+  <!-- Answer Upload Interface -->
+  <div class="upload-container" id="uploadContainer">
+    <div class="upload-header">
+      <h2>Submit Answer Sheet</h2>
+      <div class="timer" id="uploadTimer">00:03:00</div>
+    </div>
+    
+    <div class="upload-content">
+      <div class="upload-box">
+        <h3>Upload Your Answer Sheet</h3>
+        <p>Please upload a PDF or images of your handwritten answers. You have 3 minutes to complete this process.</p>
+        
+        <div class="file-input-wrapper">
+          <div class="file-input-button">Select PDF or Images</div>
+          <input type="file" class="file-input" id="fileInput" multiple accept="application/pdf,image/*">
+        </div>
+        
+        <div class="file-list" id="fileList">
+          <!-- Uploaded files will appear here -->
+        </div>
+      </div>
+      
+      <button class="final-submit-btn" id="finalSubmitBtn">Submit Answer Sheet</button>
+    </div>
+  </div>
+  
+  <!-- Final Submission Modal -->
+  <div class="modal" id="endModal">
+    <h3 class="modal-title">Complete Submission</h3>
+    <div class="modal-content">
+      <p>Your answer sheet has been uploaded. Click the button below to end the exam.</p>
+      <button class="end-btn" id="endExamBtn">END</button>
+    </div>
+  </div>
+  
+  <!-- Overlay -->
+  <div class="overlay" id="overlay"></div>
+  
+  <!-- Notification -->
+  <div class="notification" id="notification"></div>
+  
+  <script>
+    // DOM Elements
+    const takeExamBtn = document.getElementById('takeExamBtn');
+    const examContainer = document.getElementById('examContainer');
+    const examTitle = document.getElementById('examTitle');
+    const examContent = document.getElementById('examContent');
+    const examTimer = document.getElementById('examTimer');
+    const submitExamBtn = document.getElementById('submitExamBtn');
+    const notification = document.getElementById('notification');
+    const uploadContainer = document.getElementById('uploadContainer');
+    const uploadTimer = document.getElementById('uploadTimer');
+    const fileInput = document.getElementById('fileInput');
+    const fileList = document.getElementById('fileList');
+    const finalSubmitBtn = document.getElementById('finalSubmitBtn');
+    const endModal = document.getElementById('endModal');
+    const endExamBtn = document.getElementById('endExamBtn');
+    const tabWarning = document.getElementById('tabWarning');
+    const tabWarningCount = document.getElementById('tabWarningCount');
+    const overlay = document.getElementById('overlay');
+    
+    // State variables
+    let examSettings = JSON.parse(localStorage.getItem('examSettings')) || {};
+    let tabSwitchCount = 0;
+    let maxTabSwitches = examSettings.tabSwitchLimit || 3;
+    let examInterval;
+    let uploadInterval;
+    let remainingTime = examSettings.duration ? examSettings.duration * 60 : 0;
+    let uploadTime = 180; // 3 minutes in seconds
+    let isExamActive = false;
+    let isFullScreen = false;
+    let uploadedFiles = [];
+    
+    // Take exam button
+    takeExamBtn.addEventListener('click', () => {
+      if (!examSettings.section || !examSettings.type || !examSettings.questions) {
+        showNotification('No exam has been set up yet. Please contact your teacher.');
+        return;
+      }
+      
+      startExam();
+    });
+    
+    // Start exam
+    function startExam() {
+      examTitle.textContent = `${examSettings.type} - Section ${examSettings.section}`;
+      populateExamContent();
+      formatTime(remainingTime, examTimer);
+      
+      // Start the exam in fullscreen
+      requestFullScreen(document.documentElement);
+      
+      // Show exam container
+      examContainer.classList.add('active');
+      document.body.classList.add('exam-active');
+      startExamTimer();
+      isExamActive = true;
+      
+      // Start monitoring tab switches
+      startTabSwitchMonitoring();
+    }
+    
+    // Format time (seconds to HH:MM:SS)
+    function formatTime(totalSeconds, timerElement) {
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    // Start exam timer
+    function startExamTimer() {
+      examInterval = setInterval(() => {
+        remainingTime--;
+        formatTime(remainingTime, examTimer);
+        
+        if (remainingTime <= 0) {
+          clearInterval(examInterval);
+          showUploadInterface();
+        }
+      }, 1000);
+    }
+    
+    // Start upload timer
+    function startUploadTimer() {
+      uploadInterval = setInterval(() => {
+        uploadTime--;
+        formatTime(uploadTime, uploadTimer);
+        
+        if (uploadTime <= 0) {
+          clearInterval(uploadInterval);
+          finalSubmitBtn.click();
+        }
+      }, 1000);
+    }
+    
+    // Populate exam content
+    function populateExamContent() {
+      examContent.innerHTML = '';
+      const heading = document.createElement('h2');
+      heading.textContent = 'Answer the following questions:';
+      heading.style.marginBottom = '10px';
+      examContent.appendChild(heading);
+      
+      const instructions = document.createElement('p');
+      instructions.textContent = 'Please write your answers on paper. You will be asked to upload a scan or photo of your answers at the end of the exam.';
+      instructions.style.marginBottom = '30px';
+      instructions.style.color = '#b4b4b4';
+      examContent.appendChild(instructions);
+      
+      examSettings.questions.forEach((q, index) => {
+        const questionItem = document.createElement('div');
+        questionItem.className = 'question-item';
+        questionItem.innerHTML = `<p>${index + 1}. ${q}</p>`;
+        examContent.appendChild(questionItem);
+      });
+    }
+    
+    // Monitor tab switches
+    function startTabSwitchMonitoring() {
+      tabSwitchCount = 0;
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      document.addEventListener('fullscreenchange', handleFullscreenChange);
+      document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    }
+    
+    // Handle visibility change (tab switching)
+    function handleVisibilityChange() {
+      if (isExamActive && document.visibilityState === 'hidden') {
+        tabSwitchCount++;
+        
+        if (tabSwitchCount >= maxTabSwitches) {
+          clearInterval(examInterval);
+          showUploadInterface();
+        } else {
+          tabWarning.classList.add('active');
+          tabWarningCount.textContent = maxTabSwitches - tabSwitchCount;
+          setTimeout(() => tabWarning.classList.remove('active'), 5000);
+        }
+      }
+    }
+    
+    // Handle fullscreen change
+    function handleFullscreenChange() {
+      isFullScreen = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      if (isExamActive && !isFullScreen) {
+        tabSwitchCount++;
+        
+        if (tabSwitchCount >= maxTabSwitches) {
+          clearInterval(examInterval);
+          showUploadInterface();
+        } else {
+          tabWarning.classList.add('active');
+          tabWarningCount.textContent = maxTabSwitches - tabSwitchCount;
+          setTimeout(() => tabWarning.classList.remove('active'), 5000);
+          requestFullScreen(document.documentElement);
+        }
+      }
+    }
+    
+    // Request fullscreen
+    function requestFullScreen(element) {
+      if (element.requestFullscreen) {
+        element.requestFullscreen().catch(err => console.error('Fullscreen request failed:', err));
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+      isFullScreen = true;
+    }
+    
+    // Exit fullscreen
+    function exitFullScreen() {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(err => console.error('Exit fullscreen failed:', err));
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+      isFullScreen = false;
+    }
+    
+    // Show notification
+    function showNotification(message) {
+      notification.textContent = message;
+      notification.classList.add('active');
+      setTimeout(() => notification.classList.remove('active'), 3000);
+    }
+    
+    // Submit exam button handler
+    submitExamBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to submit your exam? This action cannot be undone.')) {
+        clearInterval(examInterval);
+        showUploadInterface();
+      }
+    });
+    
+    // Show upload interface
+    function showUploadInterface() {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+      
+      examContainer.classList.remove('active');
+      uploadContainer.classList.add('active');
+      uploadTime = 180;
+      formatTime(uploadTime, uploadTimer);
+      uploadedFiles = [];
+      fileList.innerHTML = '';
+      startUploadTimer();
+    }
+    
+    // File input handler
+    fileInput.addEventListener('change', (e) => {
+      const files = e.target.files;
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.type === 'application/pdf' || file.type.startsWith('image/')) {
+          uploadedFiles.push(file);
+          addFileToList(file);
+        } else {
+          showNotification('Only PDF and image files are allowed');
+        }
+      }
+      fileInput.value = '';
+    });
+    
+    // Add file to the list
+    function addFileToList(file) {
+      const fileItem = document.createElement('div');
+      fileItem.className = 'file-item';
+      
+      const fileName = document.createElement('div');
+      fileName.className = 'file-name';
+      fileName.textContent = file.name;
+      
+      const removeButton = document.createElement('button');
+      removeButton.className = 'remove-file';
+      removeButton.textContent = 'Remove';
+      removeButton.addEventListener('click', () => {
+        const index = uploadedFiles.indexOf(file);
+        if (index !== -1) {
+          uploadedFiles.splice(index, 1);
+        }
+        fileItem.remove();
+      });
+      
+      fileItem.appendChild(fileName);
+      fileItem.appendChild(removeButton);
+      fileList.appendChild(fileItem);
+    }
+    
+    // Final submit button handler
+    finalSubmitBtn.addEventListener('click', () => {
+      clearInterval(uploadInterval);
+      if (uploadedFiles.length === 0) {
+        if (confirm('You have not uploaded any files. Are you sure you want to submit without files?')) {
+          showEndModal();
+        } else {
+          startUploadTimer();
+        }
+      } else {
+        showEndModal();
+      }
+    });
+    
+    // Show end modal
+    function showEndModal() {
+      uploadContainer.classList.remove('active');
+      endModal.classList.add('active');
+      overlay.classList.add('active');
+    }
+    
+    // End exam button handler
+    endExamBtn.addEventListener('click', async () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      doc.setFontSize(16);
+      doc.text(`Exam Report: ${examSettings.type} - Section ${examSettings.section}`, 20, 20);
+      doc.setFontSize(12);
+      doc.text(`Submission Date: ${new Date().toLocaleString()}`, 20, 30);
+      doc.text(`Duration: ${examSettings.duration} minutes`, 20, 40);
+      
+      if (uploadedFiles.length > 0) {
+        doc.text(`Uploaded Files: ${uploadedFiles.length}`, 20, 50);
+        uploadedFiles.forEach((file, index) => {
+          doc.text(`- ${file.name}`, 30, 60 + (index * 10));
+        });
+      } else {
+        doc.text('No files were uploaded.', 20, 50);
+      }
+      
+      doc.save(`exam_report_section_${examSettings.section}.pdf`);
+      
+      // Optionally upload files to server
+      if (uploadedFiles.length > 0) {
+        const formData = new FormData();
+        uploadedFiles.forEach(file => formData.append('files', file));
+        try {
+          await fetch('/submit-answers/', {
+            method: 'POST',
+            body: formData
+          });
+        } catch (error) {
+          console.error('File upload failed:', error);
+        }
+      }
+      
+      exitFullScreen();
+      resetInterface();
+    });
+    
+    // Reset the interface after exam completion
+    function resetInterface() {
+      endModal.classList.remove('active');
+      overlay.classList.remove('active');
+      uploadContainer.classList.remove('active');
+      examContainer.classList.remove('active');
+      document.body.classList.remove('exam-active');
+      tabSwitchCount = 0;
+      isExamActive = false;
+      isFullScreen = false;
+      uploadedFiles = [];
+      fileList.innerHTML = '';
+      showNotification('Exam completed successfully');
+      
+      // Optional redirect (commented out; enable if needed)
+      // setTimeout(() => {
+      //   window.location.href = 'dashboard.html';
+      // }, 2000);
+    }
+    
+    // Prevent context menu during exam
+    document.addEventListener('contextmenu', (e) => {
+      if (isExamActive) {
+        e.preventDefault();
+        showNotification('Right-click is disabled during the exam.');
+      }
+    });
+    
+    // Prevent keyboard shortcuts during exam
+    document.addEventListener('keydown', (e) => {
+      if (isExamActive) {
+        if ((e.ctrlKey || e.metaKey) && 
+            (e.key === 'c' || e.key === 'v' || e.key === 'p' || 
+             e.key === 'a' || e.key === 's' || e.key === 'u' ||
+             e.key === 'f' || e.key === 'g' || e.key === 't' ||
+             e.key === 'Tab' || e.key === 'i')) {
+          e.preventDefault();
+          showNotification('This shortcut is disabled during the exam.');
+        }
+        if (e.altKey && e.key === 'Tab') {
+          e.preventDefault();
+          showNotification('Alt+Tab is disabled during the exam.');
+        }
+        if (e.key === 'F11' || e.key === 'F12') {
+          e.preventDefault();
+          showNotification(`${e.key} is disabled during the exam.`);
+        }
+      }
+    });
+    
+    // Warn if user tries to leave during exam
+    window.addEventListener('beforeunload', (e) => {
+      if (isExamActive) {
+        const message = 'Are you sure you want to leave? Your exam progress will be lost.';
+        e.returnValue = message;
+        return message;
+      }
+    });
+  </script>
+</body>
+</html>

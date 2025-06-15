@@ -1,0 +1,114 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #171c33; /* Dark blue-black theme */
+  margin: 0;
+  padding: 20px;
+  color: #e0e0e0; /* Light text for readability */
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #22254b; /* Slightly lighter than body for contrast */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Deeper shadow for depth */
+}
+
+h1 {
+  text-align: center;
+  color: #4a5fd6; /* Bright blue accent */
+  text-shadow: 0 0 5px rgba(74, 95, 214, 0.5); /* Subtle glow */
+}
+
+.upload-section {
+  margin-bottom: 30px;
+  padding: 15px;
+  border: 1px solid #2a2f5a; /* Darker border for section */
+  border-radius: 5px;
+  background: #1e2241; /* Darker background for sections */
+  transition: box-shadow 0.3s ease;
+}
+
+.upload-section:hover {
+  box-shadow: 0 0 10px rgba(74, 95, 214, 0.3); /* Hover effect */
+}
+
+h2 {
+  color: #4a5fd6;
+  margin-top: 0;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #b0b0c0; /* Light gray for labels */
+}
+
+input[type="file"], input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #333665; /* Darker border for inputs */
+  border-radius: 4px;
+  background: #2a2f5a; /* Dark input background */
+  color: #e0e0e0;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="file"]:focus, input[type="text"]:focus {
+  border-color: #4a5fd6;
+  box-shadow: 0 0 5px rgba(74, 95, 214, 0.5);
+  outline: none;
+}
+
+button {
+  background-color: #4a5fd6; /* Dark blue button */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+button:hover {
+  background-color: #3a4fb6; /* Slightly darker on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.result {
+  margin-top: 15px;
+  padding: 10px;
+  border: 1px solid #2a2f5a;
+  border-radius: 4px;
+  background: #1e2241;
+  display: none;
+  animation: fadeIn 0.5s ease;
+}
+
+.result.show {
+  display: block;
+}
+
+.error {
+  color: #ff5555; /* Reddish error color */
+}
+
+.success {
+  color: #55aa55; /* Greenish success color */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

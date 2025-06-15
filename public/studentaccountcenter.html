@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update</title>
+    <style>
+        /* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+    --primary-color: #171c33;
+    --secondary-color: #2a2f4c;
+    --accent-color: #4d5bce;
+    --text-color: #ffffff;
+    --text-secondary: #b8bfd0;
+    --border-color: #303655;
+    --success-color: #4caf50;
+    --error-color: #f44336;
+}
+
+body {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header Styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    color: var(--text-color);
+    background-color: var(--secondary-color);
+}
+
+nav a.active {
+    color: var(--text-color);
+    background-color: var(--accent-color);
+}
+
+/* Main Content Styles */
+main {
+    padding: 20px 0;
+}
+
+.account-settings {
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.account-settings h2 {
+    margin-bottom: 30px;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 24px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
+    font-size: 16px;
+    transition: border 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(77, 91, 206, 0.25);
+}
+
+input[type="file"] {
+    margin-bottom: 10px;
+    padding: 8px 0;
+    color: var(--text-secondary);
+}
+
+#profile-pic-preview {
+    display: block;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: 10px;
+    border: 3px solid var(--border-color);
+}
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+button[type="submit"] {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    margin-right: 10px;
+}
+
+button[type="submit"]:hover {
+    background-color: #5d6ad6;
+}
+
+#cancel-btn {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+#cancel-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
+}
+
+#status-message {
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 4px;
+    display: none;
+}
+
+#status-message.success {
+    display: block;
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+}
+
+#status-message.error {
+    display: block;
+    background-color: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+}
+
+/* Footer Styles */
+footer {
+    margin-top: 40px;
+    padding: 20px 0;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    nav {
+        margin-top: 15px;
+        width: 100%;
+        overflow-x: auto;
+    }
+    
+    .account-settings {
+        padding: 20px;
+    }
+}
+    </style>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>eXamZone</h1>
+            <nav>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="studentprofile.html">Profile</a>
+                <a href="studentaccountcenter.html" class="active">Account Settings</a>
+                <a href="logout.html">Logout</a>
+            </nav>
+        </header>
+
+        <!-- Account Settings Section -->
+        <main>
+            <section class="account-settings">
+                <h2>Account Settings</h2>
+                <form id="account-form">
+                    <div class="form-group">
+                        <label for="profile-pic-upload">Profile Picture:</label>
+                        <input type="file" id="profile-pic-upload" accept="image/*">
+                        <img id="profile-pic-preview" src="default-profile.png" alt="Profile Preview">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="institution">Institution:</label>
+                        <input type="text" id="institution" name="institution">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Change Password (optional):</label>
+                        <input type="password" id="password" name="password">
+                    </div>
+                    <button type="submit">Save Changes</button>
+                    <button type="button" id="cancel-btn">Cancel</button>
+                </form>
+                <p id="status-message"></p>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2025 AI Assessment System. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script >
+        // Initialize when the document is fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Load existing user data into the form
+    loadUserData();
+    
+    // Set up form submission handler
+    document.getElementById('account-form').addEventListener('submit', handleFormSubmit);
+    
+    // Cancel button handler
+    document.getElementById('cancel-btn').addEventListener('click', handleCancel);
+    
+    // Profile picture preview handler
+    document.getElementById('profile-pic-upload').addEventListener('change', handleProfilePicChange);
+});
+
+// Function to load existing user data into the form
+function loadUserData() {
+    // In a real application, this would be an API call
+    // For demo purposes, we'll either use data from localStorage or mock data
+    
+    let userData = {
+        name: "Aarya Sharma",
+        email: "aarya_sharma@srmap.edu.in",
+        institution: "SRM University, AP",
+    };
+    
+    // Check if we have profile data stored in localStorage
+    const storedProfileData = localStorage.getItem('userProfileData');
+    if (storedProfileData) {
+        try {
+            const parsedData = JSON.parse(storedProfileData);
+            // Override default values with stored data
+            userData = { ...userData, ...parsedData };
+        } catch (error) {
+            console.error('Error parsing stored profile data:', error);
+        }
+    }
+    
+    // Populate form fields
+    document.getElementById('name').value = userData.name || '';
+    document.getElementById('email').value = userData.email || '';
+    document.getElementById('institution').value = userData.institution || '';
+    
+    // Set profile picture if available
+    if (userData.profileImage) {
+        document.getElementById('profile-pic-preview').src = userData.profileImage;
+    }
+}
+
+// Handle form submission
+function handleFormSubmit(event) {
+    // Prevent default form submission
+    event.preventDefault();
+    
+    // Get form values
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const institution = document.getElementById('institution').value;
+    const password = document.getElementById('password').value;
+    const profilePic = document.getElementById('profile-pic-preview').src;
+    
+    // Validate form (basic validation)
+    if (!name || !email) {
+        showStatusMessage('Please fill in all required fields.', 'error');
+        return;
+    }
+    
+    // Create user data object
+    const userData = {
+        name: name,
+        email: email,
+        institution: institution,
+        profileImage: profilePic,
+        lastUpdated: new Date().toISOString()
+    };
+    
+    // In a real application, this would be an API call to update the user profile
+    // For this demo, we'll store in localStorage
+    localStorage.setItem('userProfileData', JSON.stringify(userData));
+    
+    // Show success message
+    showStatusMessage('Profile updated successfully!', 'success');
+    
+    // After a delay, redirect back to profile page
+    setTimeout(() => {
+        window.location.href = 'profile.html';
+    }, 2000);
+}
+
+// Handle profile picture change
+function handleProfilePicChange(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // Check file type
+    if (!file.type.match('image.*')) {
+        showStatusMessage('Please select an image file.', 'error');
+        return;
+    }
+    
+    // Read the file and set as preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('profile-pic-preview').src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+// Handle cancel button click
+function handleCancel() {
+    // Ask for confirmation
+    if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
+        // Navigate back to profile page
+        window.location.href = 'profile.html';
+    }
+}
+
+// Show status message function
+function showStatusMessage(message, type) {
+    const statusElement = document.getElementById('status-message');
+    statusElement.textContent = message;
+    statusElement.className = type; // 'success' or 'error'
+    statusElement.style.display = 'block';
+    
+    // Hide message after 5 seconds
+    setTimeout(() => {
+        statusElement.style.display = 'none';
+    }, 5000);
+}
+    </script>
+</body>
+</html>

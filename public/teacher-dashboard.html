@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eXamZone Teacher Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', 'Arial', sans-serif;
+    }
+    
+    body {
+      overflow: hidden;
+      background-color: #121a2f;
+      color: #e6e6e6;
+    }
+    
+    #background-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+    
+    .dashboard-container {
+      display: flex;
+      height: 100vh;
+    }
+    
+    .sidebar {
+      width: 250px;
+      background-color: rgba(25, 32, 56, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 25px 15px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 10;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      margin-bottom: 40px;
+    }
+    
+    .logo {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, #764ba2, #667eea);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 20px;
+      margin-right: 15px;
+      box-shadow: 0 5px 15px rgba(118, 75, 162, 0.3);
+      color: white;
+    }
+    
+    .brand {
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #764ba2, #667eea);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .nav-section {
+      margin-bottom: 25px;
+    }
+    
+    .nav-section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #8896b9;
+      margin-bottom: 15px;
+      padding: 0 10px;
+      letter-spacing: 1px;
+    }
+    
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .nav-item {
+      padding: 12px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      color: #a8b3cf;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+    
+    .nav-item:hover {
+      background-color: rgba(118, 75, 162, 0.15);
+      color: #d8e0ff;
+    }
+    
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(118, 75, 162, 0.2), rgba(102, 126, 234, 0.2));
+      color: #d8e0ff;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .nav-icon {
+      margin-right: 12px;
+      font-size: 18px;
+    }
+    
+    .more-menu {
+      margin-top: auto;
+      position: relative;
+    }
+    
+    .dropdown {
+      position: absolute;
+      left: 0;
+      bottom: 60px;
+      background-color: rgba(32, 41, 69, 0.98);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      width: 220px;
+      padding: 15px;
+      box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      z-index: 20;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .more-menu:hover .dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .dropdown-item {
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-bottom: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      color: #a8b3cf;
+      text-decoration: none;
+    }
+    
+    .dropdown-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .dropdown-item:hover {
+      background-color: rgba(118, 75, 162, 0.15);
+      color: #d8e0ff;
+    }
+    
+    .dropdown-icon {
+      margin-right: 12px;
+      font-size: 16px;
+      color: #667eea;
+    }
+    
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      z-index: 5;
+      position: relative;
+      overflow-y: auto;
+    }
+    
+    .header {
+      margin-bottom: 50px;
+    }
+    
+    .title {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #764ba2, #667eea);
+      /* -webkit-background-clip: text; */
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+    }
+    
+    .subtitle {
+      color: #a8b3cf;
+      font-size: 16px;
+    }
+    
+    .action-cards {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      align-items: stretch;
+      flex: 1;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .action-card {
+      flex: 1;
+      background: rgba(32, 41, 69, 0.8);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(118, 75, 162, 0.3);
+      position: relative;
+      overflow: hidden;
+      padding: 35px 25px;
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    .action-card::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 5px;
+      top: 0;
+      left: 0;
+      background: linear-gradient(90deg, #764ba2, #667eea);
+    }
+    
+    .action-card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.35);
+      border-color: rgba(118, 75, 162, 0.5);
+    }
+    
+    .card-icon-wrapper {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(118, 75, 162, 0.2), rgba(102, 126, 234, 0.2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 25px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+      position: relative;
+      z-index: 2;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(118, 75, 162, 0.3);
+    }
+    
+    .action-card:hover .card-icon-wrapper {
+      transform: scale(1.1);
+      box-shadow: 0 15px 25px rgba(118, 75, 162, 0.4);
+    }
+    
+    .card-icon {
+      font-size: 40px;
+    }
+    
+    .card-text {
+      font-size: 20px;
+      font-weight: bold;
+      color: #e6e6e6;
+      text-align: center;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .card-subtext {
+      font-size: 14px;
+      color: #a8b3cf;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      max-width: 250px;
+      line-height: 1.5;
+    }
+    
+    .glow {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(118, 75, 162, 0.4) 0%, rgba(102, 126, 234, 0) 70%);
+      filter: blur(20px);
+      opacity: 0; /* Initial opacity set to 0 */
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
+    
+    .action-card:hover .glow {
+      opacity: 1;
+    }
+    
+    .floating-elements {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .floating-element {
+      position: absolute;
+      opacity: 0.3;
+      transition: all 0.3s ease;
+    }
+    
+    .icon-book {
+      top: 10%;
+      left: 10%;
+      font-size: 24px;
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    .icon-pencil {
+      top: 20%;
+      right: 15%;
+      font-size: 20px;
+      animation: float 7s ease-in-out infinite 1s;
+    }
+    
+    .icon-calculator {
+      bottom: 15%;
+      left: 20%;
+      font-size: 22px;
+      animation: float 9s ease-in-out infinite 2s;
+    }
+    
+    .icon-globe {
+      bottom: 25%;
+      right: 12%;
+      font-size: 26px;
+      animation: float 10s ease-in-out infinite 3s;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% {
+        transform: translate(10px, 10px) rotate(5deg);
+      }
+      50% {
+        transform: translate(0, 15px) rotate(0deg);
+      }
+      75% {
+        transform: translate(-10px, 5px) rotate(-5deg);
+      }
+      100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="background-canvas"></canvas>
+
+  <div class="dashboard-container">
+    <div class="sidebar">
+      <div class="logo-container">
+        <!-- <div class="logo">E</div> -->
+        <div class="brand">eXamZone</div>
+      </div>
+      
+      <a href="/dashboard" class="nav-item active" aria-label="Go to Dashboard">
+        <span class="nav-icon">🏠</span>Dashboard
+      </a>
+      <a href="/create-class" class="nav-item" aria-label="Manage Classes">
+        <span class="nav-icon">📊</span>Class
+      </a>
+      <a href="/students" class="nav-item" aria-label="View Students">
+        <span class="nav-icon">👨‍🎓</span>Students
+      </a>
+      <a href="/assignments" class="nav-item" aria-label="Manage Assignments">
+        <span class="nav-icon">📝</span>Assignments
+      </a>      
+  
+      <div class="nav-section">
+        <h3 class="nav-section-title">Resources</h3>
+        <div class="nav-links">
+          <a href="/materials" class="nav-item" aria-label="View Materials">
+            <span class="nav-icon">📚</span>Materials
+          </a>
+          <a href="/activities" class="nav-item" aria-label="View Activities">
+            <span class="nav-icon">🧪</span>Activities
+          </a>
+        </div>
+      </div>
+      
+      <div class="more-menu">
+        <a href="/teacherprofile.html" class="nav-item" aria-label="Go to Profile">
+          <span class="nav-icon">👤</span>Profile
+        </a>
+        <div class="dropdown">
+          <a href="/settings" class="dropdown-item" aria-label="Go to Settings">
+            <span class="dropdown-icon">⚙️</span>Settings
+          </a>
+          <a href="/logout" class="dropdown-item" aria-label="Log Out">
+            <span class="dropdown-icon">🚪</span>Logout
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="main-content">
+      <div class="floating-elements">
+        <div class="floating-element icon-book">📚</div>
+        <div class="floating-element icon-pencil">✏</div>
+        <div class="floating-element icon-calculator">🧮</div>
+        <div class="floating-element icon-globe">🌎</div>
+      </div>
+      
+      <div class="header">
+        <h1 class="title">Teacher Dashboard</h1>
+        <p class="subtitle">Empower your classroom with AI-assisted tools</p>
+      </div>
+
+      <div class="action-cards">
+        <a href="http://127.0.0.1:8000" class="action-card" aria-label="Generate Questions">
+          <div class="glow"></div>
+          <div class="card-icon-wrapper">
+            <span class="card-icon">📝</span>
+          </div>
+          <h3 class="card-text">Generate Questions</h3>
+          <p class="card-subtext">Create customized questions and assessments that align with your curriculum goals</p>
+        </a>
+        <a href="http://127.0.0.1:7000/" class="action-card" aria-label="Check Papers">
+          <div class="glow"></div>
+          <div class="card-icon-wrapper">
+            <span class="card-icon">✓</span>
+          </div>
+          <h3 class="card-text">Check Papers</h3>
+          <p class="card-subtext">Quickly grade and provide detailed feedback on student submissions</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Three.js background animation with educational theme
+    const canvas = document.getElementById('background-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setClearColor(0x121a2f, 1);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 30;
+
+    // Create educational symbols (consider reducing to 30 for better performance on low-end devices)
+    const symbolGroup = new THREE.Group();
+    scene.add(symbolGroup);
+
+    // Define symbol shapes
+    const shapes = [
+      createBookGeometry(),      // Book
+      createPencilGeometry(),    // Pencil
+      createAtomGeometry(),      // Atom
+      createMathSymbolGeometry() // Math Symbol
+    ];
+
+    // Create 3D educational symbols
+    for (let i = 0; i < 60; i++) {
+      const shapeIndex = Math.floor(Math.random() * shapes.length);
+      const geometry = shapes[shapeIndex];
+      
+      const color1 = new THREE.Color(0x764ba2);
+      const color2 = new THREE.Color(0x667eea);
+      const mixAmount = Math.random();
+      const color = new THREE.Color().lerpColors(color1, color2, mixAmount);
+      
+      const material = new THREE.MeshBasicMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.1 + Math.random() * 0.2,
+        wireframe: Math.random() > 0.5
+      });
+      
+      const symbol = new THREE.Mesh(geometry, material);
+      
+      const radius = 20 + Math.random() * 30;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI;
+      
+      symbol.position.x = radius * Math.sin(phi) * Math.cos(theta);
+      symbol.position.y = radius * Math.sin(phi) * Math.sin(theta);
+      symbol.position.z = radius * Math.cos(phi) - 20;
+      
+      symbol.rotation.x = Math.random() * Math.PI;
+      symbol.rotation.y = Math.random() * Math.PI;
+      symbol.rotation.z = Math.random() * Math.PI;
+      
+      const scale = 0.5 + Math.random() * 1.5;
+      symbol.scale.set(scale, scale, scale);
+      
+      symbol.userData = {
+        rotationSpeed: {
+          x: (Math.random() - 0.5) * 0.01,
+          y: (Math.random() - 0.5) * 0.01,
+          z: (Math.random() - 0.5) * 0.01
+        },
+        floatSpeed: 0.01 + Math.random() * 0.02,
+        floatDistance: 0.5 + Math.random() * 1.5,
+        originalY: symbol.position.y,
+        phase: Math.random() * Math.PI * 2
+      };
+      
+      symbolGroup.add(symbol);
+    }
+    
+    function createBookGeometry() {
+      const width = 2, height = 3, depth = 0.5;
+      const geometry = new THREE.BoxGeometry(width, height, depth);
+      return geometry;
+    }
+    
+    function createPencilGeometry() {
+      const points = [];
+      points.push(new THREE.Vector2(0, -3));
+      points.push(new THREE.Vector2(0.3, -3));
+      points.push(new THREE.Vector2(0.3, 2));
+      points.push(new THREE.Vector2(0.15, 3));
+      points.push(new THREE.Vector2(0, 2));
+      
+      const geometry = new THREE.LatheGeometry(points, 8);
+      return geometry;
+    }
+    
+    function createAtomGeometry() {
+      const geometry = new THREE.TorusGeometry(1.5, 0.1, 8, 50);
+      return geometry;
+    }
+    
+    function createMathSymbolGeometry() {
+      const positions = new Float32Array([
+        -1.5, 0, 0,   1.5, 0, 0,   1.5, 0.5, 0,
+        -1.5, 0, 0,   1.5, 0.5, 0, -1.5, 0.5, 0,
+        -0.25, -1.5, 0,   0.25, -1.5, 0,   0.25, 1.5, 0,
+        -0.25, -1.5, 0,   0.25, 1.5, 0,   -0.25, 1.5, 0,
+      ]);
+      
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      return geometry;
+    }
+    
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+    scene.add(ambientLight);
+    
+    const clock = new THREE.Clock();
+    
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      const time = clock.getElapsedTime();
+      
+      symbolGroup.rotation.y = time * 0.03;
+      
+      symbolGroup.children.forEach((symbol, index) => {
+        const data = symbol.userData;
+        
+        symbol.rotation.x += data.rotationSpeed.x;
+        symbol.rotation.y += data.rotationSpeed.y; 
+        symbol.rotation.z += data.rotationSpeed.z;
+        
+        symbol.position.y = data.originalY + Math.sin(time * data.floatSpeed + data.phase) * data.floatDistance;
+        
+        symbol.material.opacity = 0.1 + 0.2 * Math.sin(time * 0.5 + index);
+      });
+      
+      camera.position.x = Math.sin(time * 0.1) * 2;
+      camera.position.y = Math.cos(time * 0.1) * 2;
+      camera.lookAt(0, 0, 0);
+      
+      renderer.render(scene, camera);
+    }
+    
+    animate();
+    
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Glow effect for action cards
+    const cards = document.querySelectorAll('.action-card');
+    cards.forEach(card => {
+      const glow = card.querySelector('.glow');
+      
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        glow.style.left = (x - 75) + 'px';
+        glow.style.top = (y - 75) + 'px';
+      });
+
+      card.addEventListener('mouseleave', () => {
+        glow.style.opacity = '0';
+      });
+    });
+
+    // Placeholder navigation handlers (replace with actual routing logic)
+    document.querySelectorAll('.nav-item, .dropdown-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        // e.preventDefault(); // Uncomment to prevent default navigation for SPA behavior
+        console.log(`Navigating to: ${item.getAttribute('href')}`);
+        // Example: window.location.href = item.getAttribute('href');
+      });
+    });
+
+    // Note: For better accessibility and mobile support, consider adding click-based dropdown toggling
+    // Example: Toggle .dropdown visibility on .more-menu click instead of hover
+  </script>
+</body>
+</html>

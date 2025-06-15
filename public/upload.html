@@ -1,0 +1,16 @@
+<!-- public/upload.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload PDF</title>
+</head>
+<body>
+  <h2>📄 Upload Roll Number PDF</h2>
+  <form action="/upload" method="POST" enctype="multipart/form-data">
+    <label>Class Code: <input type="text" name="classCode" required></label>
+    <label>Upload PDF: <input type="file" name="pdfFile" accept=".pdf" required></label>
+    <button type="submit">Upload</button>
+  </form>
+  
+</body>
+</html>

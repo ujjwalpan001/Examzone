@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eXamZone - Student Dashboard</title>
+  <style>
+    :root {
+      --primary: #1a9e5c;
+      --primary-dark: #158a4e;
+      --secondary: #1e88e5;
+      --bg-dark: #121212;
+      --bg-card: #1e1e1e;
+      --text-light: #e0e0e0;
+      --text-medium: #b0b0b0;
+      --border-color: #333333;
+      --success-color: #4caf50;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+    }
+    header {
+      background-color: var(--primary);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      padding: 5px 10px;
+    }
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+    .brand {
+      font-weight: bold;
+      font-size: 20px;
+      color: white;
+    }
+    .user-menu {
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    main {
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 3fr 1fr;
+      gap: 24px;
+    }
+    .welcome-section {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .welcome-section h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .welcome-section p {
+      color: var(--text-medium);
+    }
+    .card {
+      background-color: var(--bg-card);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 20px;
+      font-weight: 500;
+    }
+    .view-all {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 14px;
+      padding: 5px 10px;
+      border: 1px solid var(--primary);
+      border-radius: 4px;
+    }
+    .view-all:hover {
+      background-color: rgba(26, 158, 92, 0.1);
+    }
+    .assignment-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .assignment-item:last-child {
+      border-bottom: none;
+    }
+    .marker {
+      width: 12px;
+      height: 12px;
+      background-color: orange;
+      border-radius: 50%;
+      margin-right: 12px;
+    }
+    .assignment-info {
+      flex-grow: 1;
+    }
+    .assignment-title {
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .assignment-course {
+      color: var(--text-medium);
+      font-size: 14px;
+    }
+    .assignment-details {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 8px;
+      color: var(--text-medium);
+      font-size: 14px;
+    }
+    .detail {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .start-btn {
+      background-color: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      padding: 6px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .start-btn:hover {
+      background-color: rgba(26, 158, 92, 0.1);
+    }
+    .classes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .class-card {
+      padding: 16px;
+    }
+    .class-title {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .class-code {
+      color: var(--text-medium);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .view-class {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .view-class-btn {
+      background-color: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      padding: 6px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .view-class-btn:hover {
+      background-color: rgba(26, 158, 92, 0.1);
+    }
+    .arrow {
+      color: var(--text-medium);
+    }
+    .quick-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 16px;
+    }
+    .join-btn {
+      background-color: var(--primary);
+      color: white;
+    }
+    .join-btn:hover {
+      background-color: var(--primary-dark);
+    }
+    .view-btn {
+      background-color: var(--secondary);
+      color: white;
+    }
+    .view-btn:hover {
+      background-color: #1976d2;
+    }
+    .results-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .results-item:last-child {
+      border-bottom: none;
+    }
+    .score {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--success-color);
+      margin-bottom: 4px;
+    }
+    .completed-date {
+      color: var(--text-medium);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    .view-results-btn {
+      display: block;
+      text-align: center;
+      background-color: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      padding: 8px 16px;
+      border-radius: 4px;
+      margin-top: 16px;
+      cursor: pointer;
+      font-size: 14px;
+      width: 100%;
+    }
+    .view-results-btn:hover {
+      background-color: rgba(26, 158, 92, 0.1);
+    }
+    .custom-links {
+      margin-top: 24px;
+    }
+    .custom-links a {
+      display: block;
+      margin: 12px 0;
+      font-size: 16px;
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .custom-links a:hover {
+      text-decoration: underline;
+    }
+    /* 🎨 Modal Styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(18, 18, 18, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-box {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 24px;
+  border-radius: 10px;
+  width: 350px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+}
+
+.modal-title {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: var(--text-light);
+  text-align: center;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border-color);
+  background-color: #2a2a2a;
+  color: var(--text-light);
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.modal-input::placeholder {
+  color: var(--text-medium);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">eXamZone</div>
+    <div class="nav-links">
+      <a href="#">Dashboard</a>
+      <a href="#">My Classes</a>
+      <a href="#">Assignments</a>
+      <a href="#">Results</a>
+    </div>
+    <a href="/studentprofile.html" style="text-decoration: none; color: inherit;">
+      <div class="user-menu">
+        <span class="user-icon">👤</span>
+        <span>Aarya Sharma
+        </span>
+        <span>▼</span>
+      </div>
+    </a>
+    
+  </header>
+
+  <main>
+    <div class="welcome-section">
+      <h1>👨‍🎓 Welcome to the Student Dashboard!</h1>
+      <p>View your classes and assignments from your dashboard.</p>
+    </div>
+
+    <!-- <div class="custom-links">
+      <a href="/student">📄 View My Answer Sheet</a>
+      <a href="/upload-answer">📤 Upload My Answer Sheet</a>
+      <a href="/">🏠 Back to Home</a>
+    </div> -->
+    <div class="container">
+      <div class="left-column">
+          <div class="card">
+              <div class="card-header">
+                  <h2 class="card-title">Upcoming Assignments</h2>
+                  <a href="#" class="view-all">View All</a>
+              </div>
+              
+              <div class="assignment-list">
+                  <div class="assignment-item">
+                      <div class="marker"></div>
+                      <div class="assignment-info">
+                          <div class="assignment-title">Math Assessment</div>
+                          <div class="assignment-course">Advanced Algebra</div>
+                          <div class="assignment-details">
+                              <div class="detail">
+                                  <span>📅</span>
+                                  <span>Due: Apr 15, 2025</span>
+                              </div>
+                              <div class="detail">
+                                  <span>⏱</span>
+                                  <span>60 minutes</span>
+                              </div>
+                          </div>
+                      </div>
+                      <button class="start-btn">Start</button>
+                  </div>
+                  
+                  <div class="assignment-item">
+                      <div class="marker"></div>
+                      <div class="assignment-info">
+                          <div class="assignment-title">Programming Quiz</div>
+                          <div class="assignment-course">Python Basics</div>
+                          <div class="assignment-details">
+                              <div class="detail">
+                                  <span>📅</span>
+                                  <span>Due: Apr 18, 2025</span>
+                              </div>
+                              <div class="detail">
+                                  <span>⏱</span>
+                                  <span>45 minutes</span>
+                              </div>
+                          </div>
+                      </div>
+                      <button class="start-btn">Start</button>
+                  </div>
+              </div>
+          </div>
+          
+          <div class="card">
+              <div class="card-header">
+                  <h2 class="card-title">My Classes</h2>
+                  <a href="#" class="view-all">View All</a>
+              </div>
+              
+              <div class="classes-grid">
+                  <div class="class-card">
+                      <div class="class-title">Computer Science</div>
+                      <div class="class-code">Class Code: CS101A</div>
+                      <div class="view-class">
+                        <a href="student-interface.html" class="view-class-btn">View Class <span class="arrow">›</span>
+                        </a>
+                          <!-- <span class="arrow">›</span> -->
+                      </div>
+                  </div>
+                  <!-- <div class="classes-grid">
+                    <div class="class-card">
+                        <div class="class-title">Computer Science</div>
+                        <div class="class-code">Class Code: CS101A</div>
+                        <div class="view-class">
+                            <a href="student-interface.html" class="view-class-btn">
+                                View Class <span class="arrow">›</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                 -->
+                  
+                  <div class="class-card">
+                      <div class="class-title">Mathematics</div>
+                      <div class="class-code">Class Code: MATH55</div>
+                      <div class="view-class">
+                        <a href="student-interface.html" class="view-class-btn">View Class <span class="arrow">›</span>
+                        </a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      
+      <div class="right-column">
+          <div class="card">
+              <h2 class="card-title">Quick Actions</h2>
+              <div class="quick-actions">
+                  <button class="action-btn join-btn">
+                      <span>➕</span>
+                      <span>Join a Class</span>
+                  </button>
+                  <button class="action-btn view-btn">
+                      <span>📋</span>
+                      <span>View Assignments</span>
+                  </button>
+              </div>
+          </div>
+       
+      <!-- Join Class Modal -->
+
+          
+          <div class="card">
+              <h2 class="card-title">Recent Results</h2>
+              <div class="results-list">
+                  <div class="results-item">
+                      <div class="score">85%</div>
+                      <div class="assignment-title">Math Assessment</div>
+                      <div class="assignment-course">Advanced Algebra</div>
+                      <div class="completed-date">Completed: Apr 5, 2025</div>
+                  </div>
+                  
+                  <div class="results-item">
+                      <div class="score">92%</div>
+                      <div class="assignment-title">Programming Quiz</div>
+                      <div class="assignment-course">Python Basics</div>
+                      <div class="completed-date">Completed: Apr 3, 2025</div>
+                  </div>
+              </div>
+              
+              <button class="view-results-btn">View All Results</button>
+          </div>
+      </div>
+  </div>
+ <!-- 🌟 Styled Join Class Modal -->
+<div id="joinModal" style="display: none;" class="modal-overlay">
+  <div class="modal-box">
+    <h2 class="modal-title">Join Class</h2>
+    <input id="classCodeInput" type="text" placeholder="Enter Class Code" class="modal-input" />
+    <!-- <input id="rollNumberInput" type="text" placeholder="Enter Roll Number" class="modal-input" /> -->
+    <!-- <input id="nameInput" type="text" placeholder="Enter Your Name" class="modal-input" /> -->
+    
+    <div class="modal-actions">
+      <button id="submitJoin" class="action-btn join-btn">Join</button>
+      <button id="cancelJoin" class="action-btn view-class-btn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+  </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const joinButton = document.querySelector('.join-btn');
+      const joinModal = document.getElementById('joinModal');
+      const submitJoin = document.getElementById('submitJoin');
+      const cancelJoin = document.getElementById('cancelJoin');
+      const classInput = document.getElementById('classCodeInput');
+      const rollNumberInput = document.getElementById('rollNumberInput');
+      const nameInput = document.getElementById('nameInput');
+      const classesGrid = document.querySelector('.classes-grid');
+  
+      joinButton.addEventListener('click', () => {
+        joinModal.style.display = 'flex';
+      });
+  
+      cancelJoin.addEventListener('click', () => {
+        joinModal.style.display = 'none';
+        classInput.value = '';
+        // rollNumberInput.value = '';
+        // nameInput.value = '';
+      });
+  
+      submitJoin.addEventListener('click', async () => {
+        const classCode = classInput.value.trim();
+        const rollNumber = 102;
+        const name = "";
+  
+        if (!classCode) {
+          alert('Please fill in all the fields!');
+          return;
+        }
+  
+        try {
+          const response = await fetch('/join-class', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ classCode, rollNumber, name })
+          });
+  
+          const result = await response.json();
+          console.log("📦 Server response:", result); // Debug line
+  
+          if (result.success) {
+            alert(result.message || 'Class joined successfully!');
+  
+            // 🧠 Assign class name from code
+            let className = "New Subject";
+            if (classCode.startsWith("PHY")) className = "Physics";
+            else if (classCode.startsWith("CHEM")) className = "Chemistry";
+            else if (classCode.startsWith("BIO")) className = "Biology";
+            else if (classCode.startsWith("HIST")) className = "History";
+            else if (classCode.startsWith("MATH")) className = "Mathematics";
+            else if (classCode.startsWith("CSE")) className = "Computer Science";
+  
+            const card = document.createElement('div');
+            card.className = 'class-card';
+            card.innerHTML = `
+              <div class="class-title">${className}</div>
+              <div class="class-code">Class Code: ${classCode}</div>
+              <div class="view-class">
+                <a href="student-interface.html" class="view-class-btn">View Class <span class="arrow">›</span>
+                        </a>
+              </div>
+            `;
+  
+            classesGrid.appendChild(card);
+  
+            // Clear modal inputs and hide
+            joinModal.style.display = 'none';
+            classInput.value = '';
+            // rollNumberInput.value = '';
+            // nameInput.value = '';
+          } else {
+            alert(result.message || 'Class not found!');
+          }
+        } catch (err) {
+          console.error("❌ Fetch error:", err);
+          alert('Something went wrong! Please try again.');
+        }
+      });
+    });
+  </script>
+      
+    
+</body>
+</html>

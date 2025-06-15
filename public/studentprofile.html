@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    /* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+    --primary-color: #171c33;
+    --secondary-color: #2a2f4c;
+    --accent-color: #4d5bce;
+    --text-color: #ffffff;
+    --text-secondary: #b8bfd0;
+    --border-color: #303655;
+    --success-color: #4caf50;
+    --error-color: #f44336;
+}
+
+body {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header Styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    color: var(--text-color);
+    background-color: var(--secondary-color);
+}
+
+nav a.active {
+    color: var(--text-color);
+    background-color: var(--accent-color);
+}
+
+/* Profile Container Styles */
+.profile-container {
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Profile Header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-image-container {
+    margin-right: 25px;
+}
+
+#profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--accent-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.profile-title h2 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.profile-title p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+/* Profile Details */
+.profile-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.detail-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.detail-card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--accent-color);
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.detail-value {
+    color: var(--text-color);
+}
+
+/* Profile Actions */
+.profile-actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.button {
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+.primary-button {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+}
+
+.primary-button:hover {
+    background-color: #5d6ad6;
+    transform: translateY(-2px);
+}
+
+.secondary-button {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.secondary-button:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
+}
+
+/* Footer Styles */
+footer {
+    margin-top: 40px;
+    padding: 20px 0;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Responsive Adjustments for Profile */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    nav {
+        margin-top: 15px;
+        width: 100%;
+        overflow-x: auto;
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .profile-image-container {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .profile-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-actions {
+        flex-direction: column;
+    }
+    
+    .button {
+        width: 100%;
+    }
+}
+</style>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>eXamZone</h1>
+            <nav>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="studentprofile.html" class="active">Profile</a>
+                <a href="studentaccountcenter.html">Account Settings</a>
+                <a href="logout.html">Logout</a>
+            </nav>
+        </header>
+
+        <!-- Profile Section -->
+        <main>
+            <section class="profile-container">
+                <div class="profile-header">
+                    <div class="profile-image-container">
+                        <img id="profile-image" src="default-profile.png" alt="Profile Picture">
+                    </div>
+                    <div class="profile-title">
+                        <h2 id="user-name">Loading...</h2>
+                        <p id="user-role">Student</p>
+                    </div>
+                </div>
+
+                <div class="profile-details">
+                    <div class="detail-card">
+                        <h3>Personal Information</h3>
+                        <div class="detail-item">
+                            <span class="detail-label">Email:</span>
+                            <span id="user-email" class="detail-value">Loading...</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Institution:</span>
+                            <span id="user-institution" class="detail-value">Loading...</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Member Since:</span>
+                            <span id="user-joined" class="detail-value">Loading...</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Assessment Stats</h3>
+                        <div class="detail-item">
+                            <span class="detail-label">Assessments Taken:</span>
+                            <span id="assessments-taken" class="detail-value">Loading...</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Average Score:</span>
+                            <span id="average-score" class="detail-value">Loading...</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Last Assessment:</span>
+                            <span id="last-assessment" class="detail-value">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <a href="studentaccountcenter.html" class="button primary-button">Update Profile</a>
+                    <button id="download-data" class="secondary-button">Download My Data</button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2025 AI Assessment System. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize when the document is fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Load user profile data
+    loadUserProfile();
+    
+    // Event listener for the download data button
+    document.getElementById('download-data').addEventListener('click', downloadUserData);
+});
+
+// Function to load user profile data from the server/local storage
+function loadUserProfile() {
+    // In a real application, this would be an API call
+    // For demo purposes, we'll use mock data
+    const userData = {
+        name: "Aarya Sharma",
+        email: "aarya_sharma@srmap.edu.in",
+        institution: "SRM University, AP",
+        joinedDate: "April 12, 2025",
+        profileImage: "default-profile.png",
+        assessmentStats: {
+            taken: 12,
+            averageScore: "87%",
+            lastAssessment: "April 5, 2025"
+        }
+    };
+    
+    // Populate the profile with user data
+    document.getElementById('user-name').textContent = userData.name;
+    document.getElementById('user-email').textContent = userData.email;
+    document.getElementById('user-institution').textContent = userData.institution;
+    document.getElementById('user-joined').textContent = userData.joinedDate;
+    
+    // Set assessment statistics
+    document.getElementById('assessments-taken').textContent = userData.assessmentStats.taken;
+    document.getElementById('average-score').textContent = userData.assessmentStats.averageScore;
+    document.getElementById('last-assessment').textContent = userData.assessmentStats.lastAssessment;
+    
+    // Set profile image
+    const profileImage = document.getElementById('profile-image');
+    profileImage.src = userData.profileImage;
+    
+    // If we have profile data stored in localStorage (e.g., from account center updates)
+    // we can use it to update the display
+    const storedProfileData = localStorage.getItem('userProfileData');
+    if (storedProfileData) {
+        try {
+            const parsedData = JSON.parse(storedProfileData);
+            
+            // Update displayed information with locally stored data
+            if (parsedData.name) document.getElementById('user-name').textContent = parsedData.name;
+            if (parsedData.email) document.getElementById('user-email').textContent = parsedData.email;
+            if (parsedData.institution) document.getElementById('user-institution').textContent = parsedData.institution;
+            
+            // If there's a stored profile image (as a data URL)
+            if (parsedData.profileImage) {
+                document.getElementById('profile-image').src = parsedData.profileImage;
+            }
+        } catch (error) {
+            console.error('Error parsing stored profile data:', error);
+        }
+    }
+}
+
+// In profile.js, modify the loadUserProfile function
+
+// Change the order of operations in the loadUserProfile function
+function loadUserProfile() {
+    // Create a base userData object
+    const userData = {
+        name: "Aarya Sharma",
+        email: "aarya_sharma@srmap.edu.in",
+        institution: "SRM University, AP",
+        joinedDate: "April 12, 2025",
+        profileImage: "default-profile.png",
+        assessmentStats: {
+            taken: 12,
+            averageScore: "87%",
+            lastAssessment: "April 5, 2025"
+        }
+    };
+    
+    // Check for stored profile data BEFORE populating the UI
+    const storedProfileData = localStorage.getItem('userProfileData');
+    if (storedProfileData) {
+        try {
+            const parsedData = JSON.parse(storedProfileData);
+            
+            // Update userData object with localStorage data
+            if (parsedData.name) userData.name = parsedData.name;
+            if (parsedData.email) userData.email = parsedData.email;
+            if (parsedData.institution) userData.institution = parsedData.institution;
+            if (parsedData.profileImage) userData.profileImage = parsedData.profileImage;
+        } catch (error) {
+            console.error('Error parsing stored profile data:', error);
+        }
+    }
+    
+    // Now populate the UI with the updated userData
+    document.getElementById('user-name').textContent = userData.name;
+    document.getElementById('user-email').textContent = userData.email;
+    document.getElementById('user-institution').textContent = userData.institution;
+    document.getElementById('user-joined').textContent = userData.joinedDate;
+    
+    // Set assessment statistics
+    document.getElementById('assessments-taken').textContent = userData.assessmentStats.taken;
+    document.getElementById('average-score').textContent = userData.assessmentStats.averageScore;
+    document.getElementById('last-assessment').textContent = userData.assessmentStats.lastAssessment;
+    
+    // Set profile image
+    document.getElementById('profile-image').src = userData.profileImage;
+}
+
+// Function to check if the account center has saved any updates
+function checkForUpdates() {
+    const updatedData = sessionStorage.getItem('profileUpdates');
+    if (updatedData) {
+        // Parse and apply updates
+        const updates = JSON.parse(updatedData);
+        // Apply updates to the UI
+        // Clear the session storage
+        sessionStorage.removeItem('profileUpdates');
+    }
+}
+    </script>
+</body>
+</html>

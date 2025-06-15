@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>eXamZone - Revolutionizing the Examination Experience</title>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+
+  <!-- AOS for scroll animations -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+  <!-- Devicon for tech logos -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css" />
+
+  <style>
+    :root {
+      --primary-color: #38bdf8;
+      --secondary-color: #818cf8;
+      --dark-bg: #0f0f17;
+      --card-bg: #1c1c2c;
+      --card-hover: #2a2a42;
+      --text-light: #f1f1f1;
+      --text-muted: #c0c0c0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="%2338bdf8" stroke="%23ffffff" stroke-width="2"/></svg>') 12 12, auto;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f0f0f, #1e1e2f);
+      color: var(--text-light);
+      overflow-x: hidden;
+      perspective: 1000px;
+    }
+
+    /* Mouse trail effect */
+    .cursor-trail {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56,189,248,0.8) 0%, rgba(56,189,248,0) 70%);
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.5s ease;
+      mix-blend-mode: screen;
+    }
+
+    /* Parallax background */
+    .parallax-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .parallax-dots {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: rgba(56, 189, 248, 0.2);
+      box-shadow: 0 0 10px 2px rgba(56, 189, 248, 0.1);
+      transition: transform 0.1s ease-out;
+    }
+
+    /* Navbar with glass effect */
+    .glass-navbar {
+      background: rgba(15, 15, 23, 0.8);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      transform: translateY(-100%);
+    }
+
+    .glass-navbar.visible {
+      transform: translateY(0);
+    }
+
+    .nav-link {
+      position: relative;
+      color: var(--text-light);
+      margin: 0 15px;
+      transition: color 0.3s;
+    }
+
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      transition: width 0.3s;
+    }
+
+    .nav-link:hover {
+      color: var(--primary-color);
+    }
+
+    .nav-link:hover:after {
+      width: 100%;
+    }
+
+    /* Welcome section with 3D effects */
+    .welcome-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcome-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      transform-style: preserve-3d;
+      transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+      z-index: 2;
+    }
+
+    .welcome-card:hover {
+      box-shadow: 0 30px 70px rgba(56, 189, 248, 0.2);
+    }
+
+    .welcome-title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: translateZ(30px);
+    }
+
+    .welcome-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      transform: translateZ(20px);
+    }
+
+    .user-card {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: rgba(0, 0, 0, 0.3) 0px 8px 25px, rgba(56, 189, 248, 0.1) 0px 0px 0px 1px inset;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+    }
+
+    .user-card:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.1), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .user-card:hover {
+      transform: translateY(-15px) scale(1.02);
+      box-shadow: rgba(0, 0, 0, 0.4) 0px 15px 40px, rgba(56, 189, 248, 0.2) 0px 0px 0px 2px inset;
+    }
+
+    .user-card:hover:before {
+      opacity: 1;
+    }
+
+    .user-card:active {
+      transform: translateY(-5px) scale(0.98);
+    }
+
+    .icon-container {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+      transition: all 0.3s ease;
+      transform: translateZ(40px);
+    }
+
+    .user-card:hover .icon-container {
+      transform: translateZ(60px) scale(1.2);
+      text-shadow: 0 0 15px rgba(56, 189, 248, 0.7);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { text-shadow: 0 0 5px rgba(56, 189, 248, 0.7); }
+      50% { text-shadow: 0 0 20px rgba(56, 189, 248, 0.9); }
+      100% { text-shadow: 0 0 5px rgba(56, 189, 248, 0.7); }
+    }
+
+    .user-card h3 {
+      position: relative;
+      transform: translateZ(30px);
+      transition: all 0.3s ease;
+    }
+
+    .user-card p {
+      position: relative;
+      transform: translateZ(20px);
+      transition: all 0.3s ease;
+    }
+
+    /* Sections with enhanced styles */
+    .section {
+      padding: 6rem 2rem;
+      position: relative;
+      background: linear-gradient(to bottom, rgba(17, 17, 26, 1), rgba(17, 17, 26, 0.8));
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .section:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    }
+
+    .section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary-color);
+      position: relative;
+      display: inline-block;
+    }
+
+    .section h2:after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 10%;
+      width: 80%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    }
+
+    .section p {
+      font-size: 1.1rem;
+      max-width: 800px;
+      margin: auto;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    /* Enhanced features list */
+    .features-list {
+      margin-top: 3rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      perspective: 1000px;
+    }
+
+    .feature-box {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 2rem;
+      width: 280px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+    }
+
+    .feature-box:before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(56, 189, 248, 0.1), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      transform: rotate(30deg);
+    }
+
+    .feature-box:hover {
+      transform: perspective(1000px) rotateX(2deg) rotateY(2deg) translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(56, 189, 248, 0.1);
+    }
+
+    .feature-box:hover:before {
+      opacity: 1;
+      animation: rotate 10s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .feature-box h4 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-box p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Enhanced Timeline Style */
+    .timeline {
+      list-style: none;
+      padding: 0;
+      position: relative;
+      perspective: 1000px;
+    }
+
+    .timeline:before {
+      content: "";
+      position: absolute;
+      left: 18px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, var(--primary-color), transparent);
+      animation: pulse-line 3s infinite;
+    }
+
+    @keyframes pulse-line {
+      0% { box-shadow: 0 0 0 rgba(56, 189, 248, 0.2); }
+      50% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.7); }
+      100% { box-shadow: 0 0 0 rgba(56, 189, 248, 0.2); }
+    }
+
+    .timeline li {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 3rem;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: all 0.4s ease;
+    }
+
+    .timeline li:hover {
+      transform: translateX(10px);
+    }
+
+    .timeline li .step {
+      background: var(--primary-color);
+      color: #fff;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      text-align: center;
+      line-height: 36px;
+      font-weight: bold;
+      margin-right: 1.5rem;
+      flex-shrink: 0;
+      z-index: 1;
+      box-shadow: 0 0 0 rgba(56, 189, 248, 0.4);
+      animation: pulse-step 2s infinite;
+      transition: all 0.3s ease;
+    }
+
+    @keyframes pulse-step {
+      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+
+    .timeline li:hover .step {
+      transform: scale(1.2);
+    }
+
+    .timeline li div {
+      background: rgba(28, 28, 44, 0.7);
+      padding: 1.2rem;
+      border-radius: 12px;
+      border-left: 3px solid var(--primary-color);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+      transform: perspective(500px) rotateX(0deg);
+    }
+
+    .timeline li:hover div {
+      background: rgba(42, 42, 66, 0.9);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      transform: perspective(500px) rotateX(2deg);
+    }
+
+    .timeline li div h5 {
+      color: var(--primary-color);
+      transform: translateZ(20px);
+    }
+
+    .timeline li div p {
+      color: var(--text-muted);
+      transform: translateZ(10px);
+    }
+
+    /* Enhanced Testimonials */
+    .carousel-item {
+      padding: 2rem 0;
+      transition: transform 0.6s ease-in-out !important;
+    }
+
+    .carousel-item blockquote {
+      max-width: 700px;
+      margin: auto;
+      font-size: 1.2rem;
+      background: rgba(28, 28, 44, 0.7);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+    }
+
+    .carousel-item blockquote:before {
+      content: '"';
+      font-size: 5rem;
+      color: rgba(56, 189, 248, 0.2);
+      position: absolute;
+      top: -1rem;
+      left: 1rem;
+    }
+
+    .carousel-item blockquote:after {
+      content: '"';
+      font-size: 5rem;
+      color: rgba(56, 189, 248, 0.2);
+      position: absolute;
+      bottom: -4rem;
+      right: 1rem;
+    }
+
+    .carousel-item.active blockquote {
+      animation: float 3s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* Tech stack icons with 3D effect */
+    .tech-icon {
+      font-size: 3.5rem;
+      margin: 0 1.5rem;
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+      cursor: pointer;
+    }
+
+    .tech-icon:hover {
+      transform: translateY(-15px) scale(1.2);
+      filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.4)) brightness(1.2);
+    }
+
+    /* Enhanced footer */
+    .footer {
+      background: var(--dark-bg);
+      color: #aaa;
+      padding: 3rem 1rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    }
+
+    .footer a {
+      color: var(--primary-color);
+      margin: 0 15px;
+      text-decoration: none;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .footer a:after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--primary-color);
+      transition: width 0.3s ease;
+    }
+
+    .footer a:hover {
+      color: var(--secondary-color);
+      text-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+    }
+
+    .footer a:hover:after {
+      width: 100%;
+    }
+
+    /* Keyframe animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 30px, 0);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    /* Media queries for responsive design */
+    @media (max-width: 768px) {
+      .welcome-title {
+        font-size: 2.5rem;
+      }
+      
+      .feature-box {
+        width: 100%;
+      }
+      
+      .timeline li div {
+        padding: 1rem;
+      }
+      
+      .tech-icon {
+        font-size: 2.5rem;
+        margin: 0 1rem;
+      }
+    }
+
+    /* Keyboard interaction highlight */
+    .keyboard-focus {
+      outline: 2px solid var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+
+    .scroll-indicator.hidden {
+      opacity: 0;
+    }
+
+    .scroll-indicator .mouse {
+      width: 30px;
+      height: 50px;
+      border: 2px solid var(--primary-color);
+      border-radius: 15px;
+      position: relative;
+    }
+
+    .scroll-indicator .mouse:before {
+      content: '';
+      width: 6px;
+      height: 10px;
+      background: var(--primary-color);
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 3px;
+      opacity: 1;
+      animation: scroll 2s infinite;
+    }
+
+    @keyframes scroll {
+      0% { opacity: 1; top: 10px; }
+      100% { opacity: 0; top: 30px; }
+    }
+
+    /* Loading animation */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--dark-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+
+    .loader {
+      width: 80px;
+      height: 80px;
+      position: relative;
+    }
+
+    .loader:before, .loader:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      opacity: 0.6;
+      animation: pulse-loader 2s ease-in-out infinite;
+    }
+
+    .loader:after {
+      animation-delay: -1s;
+    }
+
+    @keyframes pulse-loader {
+      0%, 100% {
+        transform: scale(0);
+        opacity: 0.6;
+      }
+      50% {
+        transform: scale(1);
+        opacity: 0;
+      }
+    }
+
+    /* Form Styles */
+    .form-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .form-container label {
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .form-container input,
+    .form-container select,
+    .form-container button {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+    }
+
+    .form-container button {
+      background: var(--primary-color);
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .form-container button:hover {
+      background: var(--secondary-color);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loader"></div>
+  </div>
+
+  <!-- Mouse trail container -->
+  <div id="cursorTrail"></div>
+
+  <!-- Parallax Background -->
+  <div class="parallax-bg" id="parallaxBg"></div>
+
+  <!-- Navbar -->
+  <nav class="glass-navbar navbar navbar-expand-lg navbar-dark" id="navbar">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <span class="me-2" style="color: var(--primary-color);"><i class="bi bi-mortarboard-fill"></i></span>
+        <strong>eXamZone</strong>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#about">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#features">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#how-it-works">How It Works</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#testimonials">Testimonials</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#generate">Generate</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container welcome-container" id="welcome">
+    <div class="welcome-card" data-aos="fade-up" id="welcomeCard">
+      <h1 class="welcome-title" id="welcomeTitle">eXamZone</h1>
+      <p class="welcome-subtitle">Revolutionizing the Examination Experience</p>
+      
+      <div class="row g-4 mt-3">
+        <div class="col-md-6" data-aos="zoom-in">
+          <div class="user-card" id="teacherCard" onclick="window.location.href='teacher-login.html'" tabindex="0">
+            <div class="icon-container"><i class="bi bi-person-workspace"></i></div>
+            <h3>I'm a Teacher</h3>
+            <p>Create assessments, manage classes, and track student performance</p>
+          </div>
+        </div>
+        <div class="col-md-6" data-aos="zoom-in">
+          <div class="user-card" id="studentCard" onclick="window.location.href='student-login.html'" tabindex="0">
+            <div class="icon-container"><i class="bi bi-mortarboard"></i></div>
+            <h3>I'm a Student</h3>
+            <p>Take secure exams, upload answers, and view detailed feedback</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator" id="scrollIndicator">
+      <div class="mouse"></div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <div class="section" id="about" data-aos="fade-up">
+    <h2>🔍 About us</h2>
+    <p>
+      SmartAssess is a next-gen online assessment system powered by AI. It helps teachers generate questions,
+      deliver tests securely, evaluate answers with OCR & AI, and provide instant feedback. Designed to simplify
+      academic workflows and increase transparency in evaluation.
+    </p>
+  </div>
+
+  <!-- Features -->
+  <div class="section" id="features" data-aos="fade-up">
+    <h2>⚙ Key Features</h2>
+    <div class="features-list">
+      <div class="feature-box" data-aos="flip-left" data-aos-delay="100">
+        <h4>AI Question Generation</h4>
+        <p>Generate multiple variations of questions based on difficulty using GPT-4.</p>
+      </div>
+      <div class="feature-box" data-aos="flip-left" data-aos-delay="200">
+        <h4>Secure Exam Environment</h4>
+        <p>Screen lock, tab monitoring, and auto-question-switching on violations.</p>
+      </div>
+      <div class="feature-box" data-aos="flip-left" data-aos-delay="300">
+        <h4>OCR + AI Evaluation</h4>
+        <p>Scanned answer sheets are marked with feedback and visual cues.</p>
+      </div>
+      <div class="feature-box" data-aos="flip-left" data-aos-delay="400">
+        <h4>Analytics & Insights</h4>
+        <p>Real-time student performance analysis, mistake tracking, and improvement trends.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="section" id="how-it-works" data-aos="fade-up">
+    <h2>📚 How SmartAssess Works</h2>
+    <div class="container mt-4">
+      <div class="row text-start text-light justify-content-center">
+        <div class="col-md-8">
+          <ul class="timeline">
+            <li data-aos="fade-right" data-aos-delay="100">
+              <span class="step">1</span>
+              <div>
+                <h5>Teacher Creates Exam</h5>
+                <p>Using our AI-powered generator, educators create customized question sets.</p>
+              </div>
+            </li>
+            <li data-aos="fade-right" data-aos-delay="300">
+              <span class="step">2</span>
+              <div>
+                <h5>Student Takes Exam</h5>
+                <p>Students complete secure online assessments with real-time monitoring tools.</p>
+              </div>
+            </li>
+            <li data-aos="fade-right" data-aos-delay="500">
+              <span class="step">3</span>
+              <div>
+                <h5>AI Evaluation & Feedback</h5>
+                <p>Answers are scanned, evaluated, and returned with instant feedback using OCR + AI.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonials -->
+  <div class="section" id="testimonials" data-aos="fade-up">
+    <h2>💬 What Educators Say</h2>
+    <div id="testimonialCarousel" class="carousel slide mt-4" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <blockquote class="blockquote">
+            <p>"eXamZone has revolutionized how I conduct and evaluate exams. <br>It's <u>fast, secure, and intuitive.</u>"</p>
+            <footer class="blockquote-footer text-light"><br>Dr. Meera Sharma, <cite title="Institution">AIU University</cite></footer>
+          </blockquote>
+        </div>
+        <div class="carousel-item">
+          <blockquote class="blockquote">
+            <p>"The AI feedback is spot-on and incredibly helpful for students' growth. <u>A true game changer!</u>"</p>
+            <footer class="blockquote-footer text-light"><br>Prof. Ankit Rao, <cite title="Institution">NextGen College</cite></footer>
+          </blockquote>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="section" id="tech-stack" data-aos="fade-up">
+    <h2>🛠 Built With</h2>
+    <p>Powered by cutting-edge technologies for performance and reliability</p>
+    <div class="d-flex flex-wrap justify-content-center align-items-center mt-4">
+      <i class="devicon-python-plain tech-icon" data-aos="zoom-in" data-aos-delay="100" title="Python"></i>
+      <i class="devicon-django-plain tech-icon" data-aos="zoom-in" data-aos-delay="200" title="Django"></i>
+      <i class="devicon-javascript-plain tech-icon" data-aos="zoom-in" data-aos-delay="300" title="JavaScript"></i>
+      <i class="devicon-react-original tech-icon" data-aos="zoom-in" data-aos-delay="400" title="React"></i>
+      <i class="devicon-bootstrap-plain tech-icon" data-aos="zoom-in" data-aos-delay="500" title="Bootstrap"></i>
+      <i class="devicon-postgresql-plain tech-icon" data-aos="zoom-in" data-aos-delay="600" title="PostgreSQL"></i>
+    </div>
+  </div>
+
+  
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>© 2025 SmartAssess. All rights reserved.</p>
+      <div class="mt-3">
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="mailto:support@smartassess.com">Contact</a>
+      </div>
+      <div class="mt-3">
+        <a href="#" class="me-3"><i class="bi bi-twitter"></i></a>
+        <a href="#" class="me-3"><i class="bi bi-linkedin"></i></a>
+        <a href="#" class="me-3"><i class="bi bi-github"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    // Initialize AOS
+    AOS.init({
+      duration: 1000,
+      once: true,
+    });
+
+    // Loading overlay
+    const overlay = document.getElementById('loadingOverlay');
+    window.addEventListener('load', () => {
+      overlay.style.opacity = '0';
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 800);
+    });
+
+    // Show loading overlay during form submission
+    const form = document.getElementById('generateForm');
+    if (form) {
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        overlay.style.display = 'flex';
+        overlay.style.opacity = '1';
+
+        const formData = new FormData(form);
+
+        try {
+          const response = await fetch('/upload-and-generate/', {
+            method: 'POST',
+            body: formData
+          });
+          const data = await response.json();
+
+          const downloadLinks = document.getElementById('downloadLinks');
+          downloadLinks.innerHTML = '<p class="text-light">Download Links:</p>';
+
+          if (data.pdf_links) {
+            Object.entries(data.pdf_links).forEach(([regNo, link]) => {
+              const a = document.createElement('a');
+              a.href = link;
+              a.textContent = `Download PDF for Reg No ${regNo}`;
+              a.className = 'text-primary me-3';
+              a.target = '_blank';
+              downloadLinks.appendChild(a);
+              downloadLinks.appendChild(document.createElement('br'));
+            });
+          }
+          if (data.zip_link) {
+            const a = document.createElement('a');
+            a.href = data.zip_link;
+            a.textContent = 'Download ZIP';
+            a.className = 'text-primary';
+            a.target = '_blank';
+            downloadLinks.appendChild(a);
+          }
+
+          if (!data.pdf_links && !data.zip_link) {
+            downloadLinks.innerHTML = '<p class="text-warning">No files generated.</p>';
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          document.getElementById('downloadLinks').innerHTML = '<p class="text-danger">Error generating PDFs. Check console.</p>';
+        } finally {
+          setTimeout(() => {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+              overlay.style.display = 'none';
+            }, 800);
+          }, 500);
+        }
+      });
+    }
+
+    // Navbar visibility on scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('visible');
+      } else {
+        navbar.classList.remove('visible');
+      }
+    });
+
+    // Scroll indicator visibility
+    const scrollIndicator = document.getElementById('scrollIndicator');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 100) {
+        scrollIndicator.classList.add('hidden');
+      } else {
+        scrollIndicator.classList.remove('hidden');
+      }
+    });
+
+    // Mouse trail effect
+    const cursorTrail = document.getElementById('cursorTrail');
+    let trailCount = 0;
+    document.addEventListener('mousemove', (e) => {
+      const trail = document.createElement('div');
+      trail.className = 'cursor-trail';
+      trail.style.left = e.clientX + 'px';
+      trail.style.top = e.clientY + 'px';
+      cursorTrail.appendChild(trail);
+      
+      setTimeout(() => {
+        trail.style.opacity = '1';
+      }, 10);
+      
+      setTimeout(() => {
+        trail.style.opacity = '0';
+        setTimeout(() => {
+          trail.remove();
+        }, 500);
+      }, 300);
+      
+      if (++trailCount > 20) {
+        const trails = cursorTrail.children;
+        if (trails.length > 0) {
+          trails[0].remove();
+          trailCount--;
+        }
+      }
+    });
+
+    // Parallax background dots (optimized)
+    const parallaxBg = document.getElementById('parallaxBg');
+    const createDot = () => {
+      const dot = document.createElement('div');
+      dot.className = 'parallax-dots';
+      dot.style.left = Math.random() * 100 + '%';
+      dot.style.top = Math.random() * 100 + '%';
+      dot.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
+      parallaxBg.appendChild(dot);
+    };
+    
+    for (let i = 0; i < 20; i++) { // Reduced to 20 for performance
+      createDot();
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      const dots = document.querySelectorAll('.parallax-dots');
+      dots.forEach((dot, index) => {
+        const speed = 0.02 * (index % 5 + 1);
+        const x = (e.clientX - window.innerWidth / 2) * speed;
+        const y = (e.clientY - window.innerHeight / 2) * speed;
+        dot.style.transform = `translate(${x}px, ${y}px) scale(${Math.random() * 0.5 + 0.5})`;
+      });
+    });
+
+    // 3D tilt effect for welcome card
+    const welcomeCard = document.getElementById('welcomeCard');
+    welcomeCard.addEventListener('mousemove', (e) => {
+      const rect = welcomeCard.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      const rotateX = -y / 20;
+      const rotateY = x / 20;
+      welcomeCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    welcomeCard.addEventListener('mouseleave', () => {
+      welcomeCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+    });
+
+    // Keyboard accessibility
+    document.querySelectorAll('.user-card').forEach(card => {
+      card.addEventListener('focus', () => {
+        card.classList.add('keyboard-focus');
+      });
+      card.addEventListener('blur', () => {
+        card.classList.remove('keyboard-focus');
+      });
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          card.click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

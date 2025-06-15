@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classroom Creation</title>
+  <style>
+    /* Basic styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #171C33;
+      color: #e4e6eb;
+    }
+
+    .navbar {
+      background-color: #222b45;
+      color: white;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar h1 {
+      font-size: 22px;
+      font-weight: 500;
+      color: #61dafb;
+    }
+
+    .main-container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .teacher-sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .section-card {
+      background-color: #222b45;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      transition: all 0.3s ease;
+      border-left: 4px solid #61dafb;
+    }
+
+    .section-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .section-card h3 {
+      color: #61dafb;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .section-card p {
+      color: #b0b3b8;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .section-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #8a8d91;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .menu-container {
+      position: relative;
+    }
+
+    .three-dots-menu {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #e4e6eb;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+    }
+
+    .three-dots-menu:hover {
+      background-color: #2d3748;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      right: 0;
+      top: 45px;
+      background-color: #2d3748;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      padding: 8px 0;
+      min-width: 200px;
+      display: none;
+      z-index: 100;
+    }
+
+    .dropdown-menu.active {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-item {
+      padding: 10px 16px;
+      font-size: 14px;
+      color: #e4e6eb;
+    }
+
+    .dropdown-item input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: none;
+      margin-bottom: 10px;
+    }
+
+    .dropdown-item button {
+      background-color: #61dafb;
+      color: #171C33;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .dropdown-item button:hover {
+      background-color: #4bc0ee;
+    }
+
+    .section-icon {
+      width: 50px;
+      height: 50px;
+      background-color: rgba(97, 218, 251, 0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+      color: #61dafb;
+      font-size: 24px;
+    }
+
+    .welcome-text {
+      background-color: #222b45;
+      padding: 10px 15px;
+      border-radius: 20px;
+      font-size: 14px;
+      border: 1px solid #3a4257;
+    }
+
+    .badge {
+      background-color: #61dafb;
+      color: #171C33;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+
+    .section-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .open-btn {
+      background-color: transparent;
+      color: #61dafb;
+      border: 1px solid #61dafb;
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .open-btn:hover {
+      background-color: rgba(97, 218, 251, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <h1>eXamZone</h1>
+    <div class="welcome-text">Welcome, Siva</div>
+  </div>
+
+  <div class="main-container">
+    <div class="header">
+      <h2>Your Classroom Sections</h2>
+      <div class="menu-container">
+        <button class="three-dots-menu" id="menuButton">⋮</button>
+        <!-- <div class="dropdown-menu" id="dropdownMenu">
+          <form class="dropdown-item" action="/create-class" method="POST">
+          <form class="dropdown-item" id="createClassForm">
+            <input type="text" id="classCodeInput" name="code" placeholder="Enter Class Code" required>
+            <button onclick="createClass()">Create Class</button>
+          </form> -->
+          <div class="dropdown-menu" id="dropdownMenu">
+            <div class="dropdown-item">
+              <input type="text" id="classCodeInput" placeholder="Enter Class Code" required>
+            </div>
+          <!-- </div> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Dummy classroom cards -->
+    <div class="teacher-sections">
+      <div class="section-card">
+        <div class="section-icon">📘</div>
+        <h3>Literature - Section A</h3>
+        <p>8th Grade English Literature</p>
+        <div class="section-stats">
+            <span>32 Students</span>
+            <span>5 Assignments Due <span class="badge">New</span></span>
+        </div>
+        <div class="section-footer">
+          <span>Last active: Today</span>
+          <a href="teacher-interface.html" class="open-btn">Open</a>
+      </div>
+    </div>
+    
+    <div class="section-card">
+        <div class="section-icon">🧮</div>
+        <h3>Mathematics - Section B</h3>
+        <p>7th Grade Algebra</p>
+        <div class="section-stats">
+            <span>28 Students</span>
+            <span>2 Assignments Due</span>
+        </div>
+        <div class="section-footer">
+            <span>Last active: Yesterday</span>
+            <a href="teacher-interface.html" class="open-btn">Open</a>
+        </div>
+    </div>
+    
+    <div class="section-card">
+        <div class="section-icon">🧪</div>
+        <h3>Science - Section C</h3>
+        <p>9th Grade Chemistry</p>
+        <div class="section-stats">
+            <span>26 Students</span>
+            <span>1 Assignment Due</span>
+        </div>
+        <div class="section-footer">
+            <span>Last active: 2 days ago</span>
+            <a href="teacher-interface.html" class="open-btn">Open</a>
+        </div>
+    </div>
+    
+    <div class="section-card">
+        <div class="section-icon">🌎</div>
+        <h3>History - Section D</h3>
+        <p>10th Grade World History</p>
+        <div class="section-stats">
+            <span>30 Students</span>
+            <span>3 Assignments Due</span>
+        </div>
+        <div class="section-footer">
+            <span>Last active: Today</span>
+            <a href="teacher-interface.html" class="open-btn">Open</a>
+        </div>
+    </div>
+    </div>
+  </div>
+
+  <script>
+    // Dropdown Menu Toggle
+    const menuButton = document.getElementById('menuButton');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const classCodeInput = document.getElementById('classCodeInput');
+    const createClassButton = document.createElement('button');
+    createClassButton.textContent = 'Create Class';
+    createClassButton.className = 'create-class-btn';
+    document.querySelector('.dropdown-item').appendChild(createClassButton);
+  
+    menuButton.addEventListener('click', () => {
+      dropdownMenu.classList.toggle('active');
+    });
+  
+    document.addEventListener('click', (event) => {
+      if (!menuButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+        dropdownMenu.classList.remove('active');
+      }
+    });
+  
+    // Create a Class
+    createClassButton.addEventListener('click', async () => {
+      const code = classCodeInput.value.trim();
+  
+      if (!code) {
+        alert('Please enter a class code!');
+        return;
+      }
+  
+      try {
+        const response = await fetch('/create-class', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        });
+  
+        const result = await response.json();
+  
+        if (!response.ok) {
+          if (response.status === 400) {
+            alert('Please enter a class code!');
+          } else if (response.status === 409) {
+            alert('Class already exists!');
+          } else {
+            alert('Something went wrong! Please try again.');
+          }
+          return;
+        }
+  
+        // Add new class card
+        const card = document.createElement('div');
+        card.className = 'section-card';
+        card.innerHTML = `
+          <div class="section-icon">${result.icon}</div>
+          <h3>${result.title}</h3>
+          <p>${result.description}</p>
+          <div class="section-stats">
+            <span>${result.students} Students</span>
+            <span>${result.assignments} Assignments Due</span>
+          </div>
+          <div class="section-footer">
+            <span>Last active: ${result.lastActive}</span>
+            <a href="teacher-interface.html" class="open-btn">Open</a>
+          </div>
+        `;
+  
+        document.querySelector('.teacher-sections').appendChild(card);
+  
+        // Clear input and close dropdown
+        classCodeInput.value = '';
+        dropdownMenu.classList.remove('active');
+  
+        alert('Class created successfully!');
+      } catch (err) {
+        console.error('❌ Fetch error:', err);
+        alert('Something went wrong! Please try again.');
+      }
+    });
+  </script>  
+</body>
+</html>

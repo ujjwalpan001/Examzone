@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Answer Sheet</title>
+</head>
+<body>
+  <h2>Upload Your Answer Sheet</h2>
+  <form action="/upload-answer" method="POST" enctype="multipart/form-data">
+    <label>Class Code: <input type="text" name="classCode" required></label><br>
+    <label>Roll Number: <input type="text" name="roll" required></label><br>
+    <label>Answer Sheet (PDF): <input type="file" name="answerSheet" accept="application/pdf" required></label><br>
+    <button type="submit">Upload</button>
+  </form>
+</body>
+</html>
